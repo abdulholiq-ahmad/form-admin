@@ -1,9 +1,15 @@
 import { EditorState, ContentState } from "draft-js";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Editor } from "react-draft-wysiwyg";
+import { useCreateQuestionMutation, useGetQuestionsQuery } from "@/redux/api/questionApi";
 import "./editor.css";
 
 function Form() {
+  const { data, isLoading } = useGetQuestionsQuery();
+  console.log(data);
+
+  const [createQuestion] = useCreateQuestionMutation();
+
   const defaultTitle = "Untitled form";
   const defaultDesc = "Form description";
 
@@ -26,11 +32,32 @@ function Form() {
     setDescEditorState(editorState);
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const titleContent = titleEditorState.getCurrentContent().getPlainText();
+    const descContent = descEditorState.getCurrentContent().getPlainText();
+
+    const newQuestion = {
+      title: titleContent,
+      description: descContent,
+    };
+
+    try {
+      const result = createQuestion(newQuestion).unwrap();
+      console.log("Savol muvaffaqiyatli yaratildi:", result);
+      setTitleEditorState(EditorState.createWithContent(ContentState.createFromText(defaultTitle)));
+      setDescEditorState(EditorState.createWithContent(ContentState.createFromText(defaultDesc)));
+    } catch (error) {
+      console.error("Savol yaratishda xato:", error);
+    }
+  };
+
   return (
     <>
       <div className="container">
         <div className="w-full py-6">
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="p-3 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] rounded-xl border-x-2 border-gray-800">
               <div>
                 <Editor
@@ -84,6 +111,9 @@ function Form() {
                 />
               </div>
             </div>
+            <button type="submit" className="mt-4 bg-gray-800 text-white py-2 px-4 rounded">
+              Submit
+            </button>
           </form>
         </div>
       </div>
