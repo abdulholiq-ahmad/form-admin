@@ -1,15 +1,89 @@
+import { EditorState, ContentState } from "draft-js";
+import { useState } from "react";
+import { Editor } from "react-draft-wysiwyg";
+import "./editor.css";
+
 function Form() {
+  const defaultTitle = "Untitled form";
+  const defaultDesc = "Form description";
+
+  const [titleEditorState, setTitleEditorState] = useState(() =>
+    EditorState.createWithContent(ContentState.createFromText(defaultTitle))
+  );
+  const [descEditorState, setDescEditorState] = useState(() =>
+    EditorState.createWithContent(ContentState.createFromText(defaultDesc))
+  );
+
+  const [currentInlineStyles, setCurrentInlineStyles] = useState([]);
+
+  const onTitleEditorStateChange = (editorState) => {
+    setTitleEditorState(editorState);
+    const styles = editorState.getCurrentInlineStyle().toArray();
+    setCurrentInlineStyles(styles);
+  };
+
+  const onDescEditorStateChange = (editorState) => {
+    setDescEditorState(editorState);
+  };
+
   return (
     <>
       <div className="container">
-        <div className="border-t-[10px] border-t-gray-700 rounded-md px-[25px] border-l-[5px] border-l-indigo-600 py-5">
+        <div className="w-full py-6">
           <form>
-            <input
-              className="w-full pb-2 pl-2 border-b-2 focus:border-b-indigo-500 focus:border-b-3 outline-none text-4xl transition-all ease-in duration-150"
-              type="text"
-              defaultValue={"Untitled question"}
-            />
-            <div className={``}></div>
+            <div className="p-3 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] rounded-xl border-x-2 border-gray-800">
+              <div>
+                <Editor
+                  id="title"
+                  editorState={titleEditorState}
+                  wrapperClassName="wrapper-class text-3xl"
+                  editorClassName="editor-class"
+                  onEditorStateChange={onTitleEditorStateChange}
+                  toolbar={{
+                    options: ["inline"],
+                    inline: {
+                      options: ["bold", "italic", "underline"],
+                      bold: {
+                        className: currentInlineStyles.includes("BOLD") ? "my-custom-class active" : "my-custom-class",
+                      },
+                      italic: {
+                        className: currentInlineStyles.includes("ITALIC") ? "my-custom-class active" : "my-custom-class",
+                      },
+                      underline: {
+                        className: currentInlineStyles.includes("UNDERLINE") ? "my-custom-class active" : "my-custom-class",
+                      },
+                    },
+                  }}
+                  toolbarOnFocus={true}
+                />
+              </div>
+
+              <div className="mt-2">
+                <Editor
+                  id="description"
+                  editorState={descEditorState}
+                  wrapperClassName="wrapper-class"
+                  editorClassName="editor-class"
+                  onEditorStateChange={onDescEditorStateChange}
+                  toolbar={{
+                    options: ["inline"],
+                    inline: {
+                      options: ["bold", "italic", "underline"],
+                      bold: {
+                        className: currentInlineStyles.includes("BOLD") ? "my-custom-class active" : "my-custom-class",
+                      },
+                      italic: {
+                        className: currentInlineStyles.includes("ITALIC") ? "my-custom-class active" : "my-custom-class",
+                      },
+                      underline: {
+                        className: currentInlineStyles.includes("UNDERLINE") ? "my-custom-class active" : "my-custom-class",
+                      },
+                    },
+                  }}
+                  toolbarOnFocus={true}
+                />
+              </div>
+            </div>
           </form>
         </div>
       </div>

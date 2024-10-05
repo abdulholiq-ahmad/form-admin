@@ -89,8 +89,10 @@ const Signin = () => {
                 disabled={isLoading ? true : false}
                 type="submit"
                 className={`${
-                  isLoading ? "bg-gray-500" : ""
-                } flex w-full justify-center rounded-md bg-gray-800 px-3 py-1.5 text-sm font-semibold leading-6 text-white hover:bg-gray-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600`}
+                  isLoading
+                    ? "flex w-full justify-center rounded-md bg-gray-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white"
+                    : "flex w-full justify-center rounded-md bg-gray-800 px-3 py-1.5 text-sm font-semibold leading-6 text-white hover:bg-gray-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                } `}
               >
                 {isLoading ? (
                   <div
