@@ -8,11 +8,12 @@ const authApi = api.injectEndpoints({
         method: "POST",
         body,
       }),
+      invalidatesTags: ["Users"],
 
       async onQueryStarted(args, { queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-          // console.log("Response data:", data);
+          console.log("Response data:", data);
           if (data?.token) {
             localStorage.setItem("token", data.token);
           }

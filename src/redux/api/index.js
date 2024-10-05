@@ -18,33 +18,8 @@ const baseQuery = async (args, api, extraOptions) => {
   let response = await rawBaseQuery(args, api, extraOptions);
 
   if (response.error && response.error.status === 401) {
-    const refreshToken = localStorage.getItem("refreshToken");
-
-    if (refreshToken) {
-      const refreshResponse = await rawBaseQuery(
-        {
-          url: "/auth/refresh-token",
-          method: "POST",
-          body: { refreshToken },
-        },
-        api,
-        extraOptions
-      );
-
-      if (refreshResponse?.data) {
-        localStorage.setItem("token", JSON.stringify(refreshResponse.data.token));
-        if (refreshResponse.data.refreshToken) {
-          localStorage.setItem("refreshToken", JSON.stringify(refreshResponse.data.refreshToken));
-        }
-
-        response = await rawBaseQuery(args, api, extraOptions);
-      } else {
-        console.error("Failed to refresh token.");
-        dispatch(signOut());
-      }
-    } else {
-      dispatch(signOut());
-    }
+    console.error("Unauthorized - Token is invalid or expired.");
+    dispatch(signOut());
   }
 
   if (response.error && response.error.status === 403) {
@@ -60,6 +35,6 @@ const fetchBaseQueryWithRetry = retry(baseQuery, { maxRetries: 1 });
 export const api = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQueryWithRetry,
-  tagTypes: ["CARS"],
+  tagTypes: ["Users"],
   endpoints: () => ({}),
 });

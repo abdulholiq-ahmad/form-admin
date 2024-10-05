@@ -1,16 +1,19 @@
 import { signOut } from "@/redux/slices/authSlice";
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+import { Alert, Button, Space } from "antd";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 
 const Header = ({ title }) => {
   const dispatch = useDispatch();
+  const [confirmLogOut, setConfirmLogOut] = useState(false);
   const navigation = [
-    { name: "Home", href: "/", current: true },
+    { name: "Home", href: "/", current: false },
     { name: "Questions", href: "/questions", current: false },
     { name: "Responses", href: "/response", current: false },
-    { name: "Setting", href: "/settings", current: false },
+    { name: "Settings", href: "/settings", current: false },
   ];
 
   const userNavigation = [
@@ -27,11 +30,6 @@ const Header = ({ title }) => {
     email: "tom@example.com",
     imageUrl:
       "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-  };
-
-  const handleLogout = () => {
-    dispatch(signOut());
-    window.location.reload();
   };
 
   const handleNavigation = () => {
@@ -63,13 +61,10 @@ const Header = ({ title }) => {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center">
-              <Link to={"/"} className="flex-shrink-0">
-                <img
-                  alt="Your Company"
-                  src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=500"
-                  className="h-8 w-8"
-                />
+              <Link to={"/"} className="flex-shrink-0 text-2xl text-white font-mono">
+                Logo
               </Link>
+
               <div className="hidden md:block">
                 <div className="ml-10 flex items-baseline space-x-4">
                   {navigation.map((item) => (
@@ -105,17 +100,16 @@ const Header = ({ title }) => {
                   >
                     {userNavigation.map((item) => (
                       <MenuItem key={item.name}>
-                        <Link
-                          href={item.href}
+                        <button
                           onClick={() => {
                             if (item.name === "Log out") {
-                              return handleLogout();
+                              return setConfirmLogOut(true);
                             }
                           }}
-                          className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100"
+                          className="w-full px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100"
                         >
                           {item.name}
-                        </Link>
+                        </button>
                       </MenuItem>
                     ))}
                   </MenuItems>
@@ -183,6 +177,35 @@ const Header = ({ title }) => {
           </div>
         </DisclosurePanel>
       </Disclosure>
+
+      {confirmLogOut ? (
+        <Alert
+          className="absolute top-2/4 left-2/4 transform -translate-x-2/4 -translate-y-2/4 block text-xl border border-gray-800 p-8"
+          message="Do you want to log out of your account?"
+          type="simple"
+          action={
+            <Space className="mt-5 flex justify-around" direction="horizontal">
+              <button
+                className="p-2 border border-gray-800 bg-gray-800 rounded-md text-base text-white"
+                onClick={() => {
+                  dispatch(signOut());
+                  window.location.reload();
+                }}
+              >
+                Accept
+              </button>
+              <button
+                className="p-2 w-full text-base border border-gray-800 bg-transparent rounded-md text-gray-800"
+                onClick={() => setConfirmLogOut(false)}
+              >
+                Decline
+              </button>
+            </Space>
+          }
+        />
+      ) : (
+        <></>
+      )}
     </>
   );
 };
