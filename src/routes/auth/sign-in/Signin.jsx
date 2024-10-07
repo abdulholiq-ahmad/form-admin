@@ -1,12 +1,15 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSignInRequestMutation } from "../../../redux/api/authApi";
 import { Alert } from "antd";
 import { useDispatch } from "react-redux";
 import { signIn } from "../../../redux/slices/authSlice";
+import { GrFormView } from "react-icons/gr";
+import { GrFormViewHide } from "react-icons/gr";
 
 const Signin = () => {
   const [signInRequest, { data, isSuccess, isError, error, isLoading }] = useSignInRequestMutation();
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -24,6 +27,10 @@ const Signin = () => {
       navigate(`/`);
     }
   }, [isSuccess, data, navigate, dispatch]);
+
+  const handleChangeType = () => {
+    setIsPasswordVisible(!isPasswordVisible);
+  };
 
   return (
     <div className="flex flex-col justify-center">
@@ -72,15 +79,22 @@ const Signin = () => {
                 <label htmlFor="password" className="sr-only">
                   Password
                 </label>
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  autoComplete="current-password"
-                  required
-                  className="relative block p-4 w-full rounded-md border-0 py-1.5 text-gray-900 focus:outline-gray-800 outline-none ring-1 ring-inset ring-gray-100 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
-                  placeholder="Password"
-                />
+                <div className="flex items-center border focus:outline-gray-800 rounded-md">
+                  <input
+                    id="password"
+                    name="password"
+                    type={!isPasswordVisible ? "password" : "text"}
+                    autoComplete="current-password"
+                    required
+                    className="relative block p-4 border-none w-full  py-1.5 text-gray-90 outline-gray- ring-1 ring-inset ring-gray-100 placeholder:text-gray-400 focus:z-10 focus:ring-inset sm:text-sm sm:leading-6"
+                    placeholder="Password"
+                  />
+                  {!isPasswordVisible ? (
+                    <GrFormViewHide onClick={() => setIsPasswordVisible(!isPasswordVisible)} />
+                  ) : (
+                    <GrFormView onClick={() => setIsPasswordVisible(!isPasswordVisible)} />
+                  )}
+                </div>
               </div>
             </div>
 

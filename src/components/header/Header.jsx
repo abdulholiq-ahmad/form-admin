@@ -180,11 +180,11 @@ const Header = ({ title }) => {
 
       {confirmLogOut ? (
         <Alert
-          className="absolute top-2/4 left-2/4 transform -translate-x-2/4 -translate-y-2/4 block text-xl border border-gray-800 p-8"
+          className="absolute top-2/4 left-2/4 transform -translate-x-2/4 -translate-y-2/4 block text-xl border border-gray-800 p-4"
           message="Do you want to log out of your account?"
           type="simple"
           action={
-            <Space className="mt-5 flex justify-around" direction="horizontal">
+            <Space className="mt-5 flex items-start justify-end" direction="horizontal">
               <button
                 className="p-2 border border-gray-800 bg-gray-800 rounded-md text-base text-white"
                 onClick={() => {
