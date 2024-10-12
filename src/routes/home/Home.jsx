@@ -1,7 +1,7 @@
 import FormComponent from "@/components/formComponent/FormComponent";
 import { useGetQuestionsQuery } from "@/redux/api/questionApi";
 import { Alert } from "antd";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 
 const Home = ({ title }) => {
   const [isSuccess, setIsSuccess] = useState(false);
@@ -40,8 +40,8 @@ const Home = ({ title }) => {
           />
         ) : null}
         <div className="bg-white shadow">
-          <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-            <h1 className="text-3xl font-semibold tracking-tight text-gray-900">{title}</h1>
+          <div className="container mx-auto px-4 py-4 sm:px-6 lg:px-8">
+            <h2 className="text-3xl font-semibold tracking-tight text-gray-900">{title}</h2>
           </div>
         </div>
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
@@ -52,4 +52,4 @@ const Home = ({ title }) => {
   );
 };
 
-export default Home;
+export default memo(Home);

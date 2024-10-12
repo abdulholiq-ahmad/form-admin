@@ -5,10 +5,10 @@ const initialState = {
     {
       questions: [
         {
-          questionType: "radio",
+          questionType: "checkbox",
           required: true,
           questionText: "Question",
-          options: ["Option 1", "Option 2", "Option 3"],
+          options: ["Option 1"],
         },
       ],
     },

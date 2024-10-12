@@ -43,7 +43,7 @@ const Header = ({ title }) => {
   return (
     <>
       <Disclosure as="nav" className="bg-gray-800">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="container">
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center">
               <Link to={"/"} className="flex-shrink-0 text-2xl text-white font-mono">
@@ -164,30 +164,32 @@ const Header = ({ title }) => {
       </Disclosure>
 
       {confirmLogOut ? (
-        <Alert
-          className="absolute top-2/4 left-2/4 transform -translate-x-2/4 -translate-y-2/4 block text-xl border border-gray-800 p-4"
-          message="Do you want to log out of your account?"
-          type="simple"
-          action={
-            <Space className="mt-5 flex items-start justify-end" direction="horizontal">
-              <button
-                className="p-2 border border-gray-800 bg-gray-800 rounded-md text-base text-white"
-                onClick={() => {
-                  dispatch(signOut());
-                  window.location.reload();
-                }}
-              >
-                Accept
-              </button>
-              <button
-                className="p-2 w-full text-base border border-gray-800 bg-transparent rounded-md text-gray-800"
-                onClick={() => setConfirmLogOut(false)}
-              >
-                Decline
-              </button>
-            </Space>
-          }
-        />
+        <div className="w-full h-full absolute top-0 left-0 bg-gray-800/70 z-10">
+          <Alert
+            className="absolute top-2/4 left-2/4 z-30 bg-white transform -translate-x-2/4 -translate-y-2/4 text-2xl font-semibold p-4 w-[300px] h-[200px] flex flex-col justify-between items-end"
+            message="Do you want to log out of your account?"
+            type="simple"
+            action={
+              <Space className="mt-5 flex items-start justify-end" direction="horizontal">
+                <button
+                  className="p-2 border border-gray-800 bg-gray-800 rounded-md text-base text-white"
+                  onClick={() => {
+                    dispatch(signOut());
+                    window.location.reload();
+                  }}
+                >
+                  Accept
+                </button>
+                <button
+                  className="p-2 w-full text-base border border-gray-800 bg-transparent rounded-md text-gray-800"
+                  onClick={() => setConfirmLogOut(false)}
+                >
+                  Decline
+                </button>
+              </Space>
+            }
+          />
+        </div>
       ) : (
         <></>
       )}

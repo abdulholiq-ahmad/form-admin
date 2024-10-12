@@ -9,28 +9,47 @@ import {
   removeQuestion,
   addOption,
   setRequired,
-  setQuestionsType,
   updateQuestion,
 } from "@/redux/slices/questionSlice";
 import TypeQuestion from "./FormRadio";
 import { IoClose } from "react-icons/io5";
-import { HiPencilAlt } from "react-icons/hi";
+
 import { IoIosCheckbox, IoIosRadioButtonOn } from "react-icons/io";
 import { IoIosArrowDropdownCircle } from "react-icons/io";
 import { IoText } from "react-icons/io5";
 import { MdDeleteOutline } from "react-icons/md";
 import "./editor.css";
+import { Alert } from "antd";
 
 function Form() {
   const questionData = useSelector((state) => state.questions?.questionsList[0].questions || []);
+  const [visible, setVisible] = useState(false);
   const [questionAnswers, setQuestionAnswers] = useState([""]);
-  const { options = [] } = useSelector((state) => state.questions || {});
   const [postQuestions] = usePostQuestionMutation();
   const dispatch = useDispatch();
 
   // Handle Change Type
   const handleChangeType = (index, newType) => {
-    dispatch(updateQuestion({ questionIndex: index, questionData: { questionType: newType } }));
+    if (newType === "text") {
+      dispatch(
+        updateQuestion({
+          questionIndex: index,
+          questionData: {
+            questionType: newType,
+            options: ["Answer"],
+          },
+        })
+      );
+    } else {
+      dispatch(
+        updateQuestion({
+          questionIndex: index,
+          questionData: {
+            questionType: newType,
+          },
+        })
+      );
+    }
   };
 
   // Handle Remove Question
@@ -65,6 +84,10 @@ function Form() {
     setQuestionAnswers(updatedOptions);
 
     dispatch(updateOption({ index, value: e.target.value }));
+  };
+
+  const handleCloseAlert = () => {
+    setVisible(!visible);
   };
 
   // const renderOption = (option, questionType, index) => {
@@ -334,10 +357,23 @@ function Form() {
 
     try {
       const result = await postQuestions(newQuestionData).unwrap();
-      console.log("Savol muvaffaqiyatli yaratildi:", result);
+      console.log("Savol muvaffaqiyatli yaratildi:", result.error || result);
 
       dispatch(addQuestion(result));
       setQuestionAnswers([""]);
+
+      if (result.status === "FETCH_ERROR") {
+        return (
+          <Alert
+            className="flex items-center top-2 left-1/2 transform -translate-x-1/2 fixed"
+            message={result?.error}
+            type="error"
+            closable
+            onClose={() => handleCloseAlert}
+            showIcon
+          />
+        );
+      }
     } catch (error) {
       console.error("Savol yaratishda xato:", error);
     }

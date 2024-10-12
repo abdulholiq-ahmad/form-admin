@@ -1,5 +1,4 @@
 const FormComponent = ({ data }) => {
-  console.log(data);
   return (
     <div>
       {data?.form.map((item) => (

@@ -4,12 +4,12 @@ import { useEffect } from "react";
 function App() {
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/auth/login");
-    }
-  }, [navigate]);
+  // useEffect(() => {
+  //   const token = localStorage.getItem("token");
+  //   if (!token) {
+  //     navigate("/auth/login");
+  //   }
+  // }, [navigate]);
 
   return (
     <>
