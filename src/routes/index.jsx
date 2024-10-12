@@ -3,8 +3,6 @@ import Header from "../components/header/Header";
 import Footer from "../components/footer/Footer";
 import Suspense from "../utils";
 import { lazy } from "react";
-import Settings from "./settings/Settings";
-import Response from "./response/Response";
 import Questions from "./questions/Questions";
 
 const Home = lazy(() => import("./home/Home"));
@@ -48,14 +46,6 @@ const RouteController = () => {
             {
               path: "/questions",
               element: <Questions title={"Create a question"} />,
-            },
-            {
-              path: "/response",
-              element: <Response title={"Response"} />,
-            },
-            {
-              path: "/settings",
-              element: <Settings title={"Settings"} />,
             },
           ],
         },

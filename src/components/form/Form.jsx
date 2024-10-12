@@ -1,53 +1,343 @@
-import { EditorState, ContentState } from "draft-js";
-import { useState, useEffect } from "react";
-import { Editor } from "react-draft-wysiwyg";
-import { useCreateQuestionMutation, useGetQuestionsQuery } from "@/redux/api/questionApi";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { usePostQuestionMutation } from "@/redux/api/questionApi";
+import {
+  setQuestions,
+  addQuestion,
+  updateOption,
+  removeOption,
+  removeQuestion,
+  addOption,
+  setRequired,
+  setQuestionsType,
+  updateQuestion,
+} from "@/redux/slices/questionSlice";
+import TypeQuestion from "./FormRadio";
+import { IoClose } from "react-icons/io5";
+import { HiPencilAlt } from "react-icons/hi";
+import { IoIosCheckbox, IoIosRadioButtonOn } from "react-icons/io";
+import { IoIosArrowDropdownCircle } from "react-icons/io";
+import { IoText } from "react-icons/io5";
+import { MdDeleteOutline } from "react-icons/md";
 import "./editor.css";
 
 function Form() {
-  const { data, isLoading } = useGetQuestionsQuery();
-  console.log(data);
+  const questionData = useSelector((state) => state.questions?.questionsList[0].questions || []);
+  const [questionAnswers, setQuestionAnswers] = useState([""]);
+  const { options = [] } = useSelector((state) => state.questions || {});
+  const [postQuestions] = usePostQuestionMutation();
+  const dispatch = useDispatch();
 
-  const [createQuestion] = useCreateQuestionMutation();
-
-  const defaultTitle = "Untitled form";
-  const defaultDesc = "Form description";
-
-  const [titleEditorState, setTitleEditorState] = useState(() =>
-    EditorState.createWithContent(ContentState.createFromText(defaultTitle))
-  );
-  const [descEditorState, setDescEditorState] = useState(() =>
-    EditorState.createWithContent(ContentState.createFromText(defaultDesc))
-  );
-
-  const [currentInlineStyles, setCurrentInlineStyles] = useState([]);
-
-  const onTitleEditorStateChange = (editorState) => {
-    setTitleEditorState(editorState);
-    const styles = editorState.getCurrentInlineStyle().toArray();
-    setCurrentInlineStyles(styles);
+  // Handle Change Type
+  const handleChangeType = (index, newType) => {
+    dispatch(updateQuestion({ questionIndex: index, questionData: { questionType: newType } }));
   };
 
-  const onDescEditorStateChange = (editorState) => {
-    setDescEditorState(editorState);
+  // Handle Remove Question
+  const handleRemoveQuestion = (index) => {
+    dispatch(removeQuestion(index));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  // Handle Add Option
+  const handleAddOption = (questionIndex) => {
+    dispatch(addOption({ questionIndex }));
+  };
 
-    const titleContent = titleEditorState.getCurrentContent().getPlainText();
-    const descContent = descEditorState.getCurrentContent().getPlainText();
+  // Handle Update Option
+  const handleUpdateOption = (questionIndex, optionIndex, value) => {
+    dispatch(updateOption({ questionIndex, optionIndex, value }));
+  };
 
-    const newQuestion = {
-      title: titleContent,
-      description: descContent,
+  // Handle Remove Option
+  const handleRemoveOption = (questionIndex, optionIndex) => {
+    dispatch(removeOption({ questionIndex, optionIndex }));
+  };
+
+  // Handle Set Required
+  const handleSetRequired = (index, value) => {
+    dispatch(setRequired({ questionIndex: index, value }));
+  };
+
+  // Handle Option Change
+  const handleOptionChange = (e, index) => {
+    const updatedOptions = [...questionAnswers];
+    updatedOptions[index] = e.target.value;
+    setQuestionAnswers(updatedOptions);
+
+    dispatch(updateOption({ index, value: e.target.value }));
+  };
+
+  // const renderOption = (option, questionType, index) => {
+  //   return (
+  //     <div className="flex gap-3" key={option}>
+  //       <div className="flex items-center gap-4 w-full">
+  //         {(questionType === "checkbox" && <IoIosCheckbox className="size-6 text-gray-700" />) ||
+  //           (questionType === "radio" && <IoIosRadioButtonOn className="size-6 text-gray-700" />) ||
+  //           (questionType === "dropdown" && <IoIosArrowDropdownCircle className="size-6 text-gray-700" />) ||
+  //           (questionType === "text" && <IoText className="size-6 text-gray-700" />)}
+  //         <input
+  //           required
+  //           className="w-full text-lg border rounded-md pl-2 py-1.5"
+  //           type="text"
+  //           placeholder="Option"
+  //           name="option"
+  //           value={option}
+  //           onChange={(e) => handleOptionChange(e, index)}
+  //         />
+  //       </div>
+  //       <button className="text-red-500" type="button" onClick={() => handleRemoveOption(index)}>
+  //         <MdDeleteOutline className="size-6" />
+  //       </button>
+  //     </div>
+  //   );
+  // };
+
+  // Render Question
+  const renderQuestion = (question, index) => {
+    return (
+      <div key={index} className="relative p-3 flex flex-col gap-4 shadow rounded-xl">
+        <div className="flex items-end gap-4">
+          <textarea
+            required
+            className="resize-y h-[40px] text-lg border rounded-md w-full pl-2 py-1.5"
+            type="text"
+            placeholder="Question"
+            name="question"
+            defaultValue={question.questionText}
+          />
+
+          <TypeQuestion title={question.questionType} handleChangeType={(newType) => handleChangeType(index, newType)} />
+        </div>
+
+        {question.options?.map((item, optionIndex) => (
+          <div key={optionIndex} className="flex gap-3">
+            <div className="flex items-center gap-4 w-full">
+              {(question.questionType === "checkbox" && <IoIosCheckbox className="size-6 text-gray-700" />) ||
+                (question.questionType === "radio" && <IoIosRadioButtonOn className="size-6 text-gray-700" />) ||
+                (question.questionType === "dropdown" && <IoIosArrowDropdownCircle className="size-6 text-gray-700" />) ||
+                (question.questionType === "text" && <IoText className="size-6 text-gray-700" />)}
+
+              <input
+                required
+                name="option"
+                onChange={(e) => handleUpdateOption(index, optionIndex, e.target.value)}
+                className="border rounded-md pl-2 w-full py-1"
+                type="text"
+                placeholder="Option"
+                defaultValue={item}
+              />
+            </div>
+
+            {question.options.length > 1 && (
+              <button
+                type="button"
+                onClick={() => handleRemoveOption(index, optionIndex)}
+                className="border rounded-md px-3 bg-gray-800 text-white"
+              >
+                <IoClose className="size-4" />
+              </button>
+            )}
+          </div>
+        ))}
+
+        <div>
+          {question.questionType !== "text" ? (
+            <button
+              onClick={() => handleAddOption(index)}
+              type="button"
+              className="text-blue-500 text-sm font-medium border-b inline-block hover:opacity-80"
+            >
+              Add option
+            </button>
+          ) : null}
+        </div>
+
+        <div className="flex items-center gap-3 ml-auto ">
+          <label className="flex items-center cursor-pointer relative">
+            <input
+              type="checkbox"
+              checked={question.required}
+              onChange={(e) => handleSetRequired(index, e.target.checked)}
+              className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded border border-slate-300 checked:bg-slate-800 checked:border-slate-800"
+              id="required"
+            />
+            <span className="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-3.5 w-3.5"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                stroke="currentColor"
+                strokeWidth="1"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clipRule="evenodd"
+                ></path>
+              </svg>
+            </span>
+          </label>
+          <label className="cursor-pointer" htmlFor="required">
+            Required
+          </label>
+          <button
+            onClick={() => handleRemoveQuestion(index)}
+            type="button"
+            className="p-2 px-4 bg-gray-800 text-white rounded-md hover:bg-gray-700"
+          >
+            <MdDeleteOutline className="size-4" />
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  // Create Questions
+  const createQuestions = (question, index) => {
+    return (
+      <div key={index} className="relative p-3 flex flex-col gap-4 shadow rounded-xl">
+        <div className="flex items-end gap-4">
+          <textarea
+            required
+            className="resize-y h-[40px] text-lg border rounded-md w-full pl-2 py-1.5"
+            type="text"
+            placeholder="Question"
+            name="question"
+            defaultValue={question?.questionText}
+          />
+
+          <TypeQuestion title={question?.questionType} handleChangeType={handleChangeType} />
+        </div>
+
+        {question?.options?.map((item, optionIndex) => (
+          <div key={optionIndex} className="flex gap-3">
+            <div className="flex items-center gap-4 w-full">
+              {(question?.questionType === "checkbox" && <IoIosCheckbox className="size-6 text-gray-700" />) ||
+                (question?.questionType === "radio" && <IoIosRadioButtonOn className="size-6 text-gray-700" />) ||
+                (question?.questionType === "dropdown" && <IoIosArrowDropdownCircle className="size-6 text-gray-700" />) ||
+                (question?.questionType === "text" && <IoText className="size-6 text-gray-700" />)}
+
+              <input
+                required
+                name="option"
+                onChange={(e) => {
+                  dispatch(updateOption({ index, value: e.target.value }));
+                  console.log(e.target.value);
+                }}
+                className="border rounded-md pl-2 w-full py-1"
+                type="text"
+                placeholder="Option"
+                defaultValue={item}
+              />
+            </div>
+
+            {question?.options.length > 1 && (
+              <button
+                type="button"
+                onClick={() => handleRemoveOption(optionIndex)}
+                className="border rounded-md px-3 bg-gray-800 text-white"
+              >
+                <IoClose className="size-4" />
+              </button>
+            )}
+          </div>
+        ))}
+
+        <div>
+          {question?.questionType !== "text" ? (
+            <button
+              onClick={() => handleAddOption(index)}
+              type="button"
+              className="text-blue-500 text-sm font-medium border-b inline-block hover:opacity-80"
+            >
+              Add option
+            </button>
+          ) : null}
+        </div>
+
+        <div className="flex items-center gap-3 ml-auto ">
+          <label className="flex items-center cursor-pointer relative">
+            <input
+              type="checkbox"
+              checked={question.required}
+              onChange={(e) => handleSetRequired(question, e.target.checked)}
+              className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded border border-slate-300 checked:bg-slate-800 checked:border-slate-800"
+              id="required"
+            />
+            <span className="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-3.5 w-3.5"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                stroke="currentColor"
+                strokeWidth="1"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clipRule="evenodd"
+                ></path>
+              </svg>
+            </span>
+          </label>
+          <label className="cursor-pointer" htmlFor="required">
+            Required
+          </label>
+          <button
+            onClick={() => handleRemoveQuestion(index)}
+            type="button"
+            className="p-2 px-4 bg-gray-800 text-white rounded-md hover:bg-gray-700"
+          >
+            <MdDeleteOutline className="size-4" />
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  // Handle Create Question
+  const handleCreateQuestion = () => {
+    const newQuestionData = {
+      questionText: "Question Text",
+      questionType: "checkbox",
+      options: ["Option 1", "Option 2"],
+      required: false,
     };
 
+    dispatch(addQuestion(newQuestionData));
+    createQuestions(newQuestionData);
+  };
+
+  // Render Questions
+  const renderQuestions = (questionData) => {
+    return questionData.map((question, questionIndex) => (
+      <div key={questionIndex} className="flex flex-col gap-4">
+        {renderQuestion(question, questionIndex)}
+      </div>
+    ));
+  };
+
+  // Handle Submit
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const data = new FormData(e.currentTarget);
+    const newQuestionData = {
+      title: data.get("title"),
+      description: data.get("description"),
+      questions: questionData,
+    };
+
+    console.log(newQuestionData);
+
     try {
-      const result = createQuestion(newQuestion).unwrap();
+      const result = await postQuestions(newQuestionData).unwrap();
       console.log("Savol muvaffaqiyatli yaratildi:", result);
-      setTitleEditorState(EditorState.createWithContent(ContentState.createFromText(defaultTitle)));
-      setDescEditorState(EditorState.createWithContent(ContentState.createFromText(defaultDesc)));
+
+      dispatch(addQuestion(result));
+      setQuestionAnswers([""]);
     } catch (error) {
       console.error("Savol yaratishda xato:", error);
     }
@@ -58,62 +348,39 @@ function Form() {
       <div className="container">
         <div className="w-full py-6">
           <form onSubmit={handleSubmit}>
-            <div className="p-3 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] rounded-xl border-x-2 border-gray-800">
-              <div>
-                <Editor
+            <div className="p-3 mb-8 shadow rounded-xl">
+              <div className="flex flex-col gap-4">
+                <input
+                  name="title"
                   id="title"
-                  editorState={titleEditorState}
-                  wrapperClassName="wrapper-class text-3xl"
-                  editorClassName="editor-class"
-                  onEditorStateChange={onTitleEditorStateChange}
-                  toolbar={{
-                    options: ["inline"],
-                    inline: {
-                      options: ["bold", "italic", "underline"],
-                      bold: {
-                        className: currentInlineStyles.includes("BOLD") ? "my-custom-class active" : "my-custom-class",
-                      },
-                      italic: {
-                        className: currentInlineStyles.includes("ITALIC") ? "my-custom-class active" : "my-custom-class",
-                      },
-                      underline: {
-                        className: currentInlineStyles.includes("UNDERLINE") ? "my-custom-class active" : "my-custom-class",
-                      },
-                    },
-                  }}
-                  toolbarOnFocus={true}
+                  type="text"
+                  defaultValue="Untitled form"
+                  className="w-full border p-2 rounded-md text-3xl"
                 />
-              </div>
-
-              <div className="mt-2">
-                <Editor
+                <input
+                  name="description"
                   id="description"
-                  editorState={descEditorState}
-                  wrapperClassName="wrapper-class"
-                  editorClassName="editor-class"
-                  onEditorStateChange={onDescEditorStateChange}
-                  toolbar={{
-                    options: ["inline"],
-                    inline: {
-                      options: ["bold", "italic", "underline"],
-                      bold: {
-                        className: currentInlineStyles.includes("BOLD") ? "my-custom-class active" : "my-custom-class",
-                      },
-                      italic: {
-                        className: currentInlineStyles.includes("ITALIC") ? "my-custom-class active" : "my-custom-class",
-                      },
-                      underline: {
-                        className: currentInlineStyles.includes("UNDERLINE") ? "my-custom-class active" : "my-custom-class",
-                      },
-                    },
-                  }}
-                  toolbarOnFocus={true}
+                  type="text"
+                  defaultValue="Untitled description"
+                  className="w-full border p-2 rounded-md text-xl"
                 />
               </div>
             </div>
-            <button type="submit" className="mt-4 bg-gray-800 text-white py-2 px-4 rounded">
-              Submit
-            </button>
+
+            <div className="flex flex-col gap-4">{renderQuestions(questionData)}</div>
+
+            <div className="mt-6 flex items-center justify-between">
+              <button
+                onClick={() => handleCreateQuestion()}
+                className="p-2 px-5 bg-gray-800 text-white rounded-md hover:bg-gray-700"
+                type="button"
+              >
+                Add Question
+              </button>
+              <button type="submit" className="p-2 px-5 bg-gray-800 text-white rounded-md hover:bg-gray-700">
+                Save
+              </button>
+            </div>
           </form>
         </div>
       </div>

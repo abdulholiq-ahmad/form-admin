@@ -9,11 +9,10 @@ import { Link } from "react-router-dom";
 const Header = ({ title }) => {
   const dispatch = useDispatch();
   const [confirmLogOut, setConfirmLogOut] = useState(false);
+
   const navigation = [
     { name: "Home", href: "/", current: false },
     { name: "Questions", href: "/questions", current: false },
-    { name: "Responses", href: "/response", current: false },
-    { name: "Settings", href: "/settings", current: false },
   ];
 
   const userNavigation = [
@@ -36,23 +35,9 @@ const Header = ({ title }) => {
     if (window.location.pathname === "/") {
       navigation[0].current = true;
       navigation[1].current = false;
-      navigation[2].current = false;
-      navigation[3].current = false;
-    } else if (window.location.pathname === "/questions") {
+    } else {
       navigation[0].current = false;
       navigation[1].current = true;
-      navigation[2].current = false;
-      navigation[3].current = false;
-    } else if (window.location.pathname === "/response") {
-      navigation[0].current = false;
-      navigation[1].current = false;
-      navigation[2].current = true;
-      navigation[3].current = false;
-    } else if (window.location.pathname === "/settings") {
-      navigation[0].current = false;
-      navigation[1].current = false;
-      navigation[2].current = false;
-      navigation[3].current = true;
     }
   };
   return (

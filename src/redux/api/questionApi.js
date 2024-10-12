@@ -9,7 +9,7 @@ const questionApi = api.injectEndpoints({
       }),
       providesTags: ["Questions"],
     }),
-    createQuestion: build.mutation({
+    postQuestion: build.mutation({
       query: (body) => ({
         url: "/survey",
         method: "POST",
@@ -20,4 +20,4 @@ const questionApi = api.injectEndpoints({
   }),
 });
 
-export const { useCreateQuestionMutation, useGetQuestionsQuery } = questionApi;
+export const { usePostQuestionMutation, useGetQuestionsQuery } = questionApi;

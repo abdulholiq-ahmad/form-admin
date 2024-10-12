@@ -1,9 +1,12 @@
+import FormComponent from "@/components/formComponent/FormComponent";
+import { useGetQuestionsQuery } from "@/redux/api/questionApi";
 import { Alert } from "antd";
 import { useEffect, useState } from "react";
 
 const Home = ({ title }) => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [visible, setVisible] = useState(false);
+  const { data } = useGetQuestionsQuery();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -17,7 +20,7 @@ const Home = ({ title }) => {
 
       return () => clearTimeout(timer);
     }
-  }, []);
+  }, [isSuccess]);
 
   const handleClose = () => {
     setVisible(false);
@@ -38,10 +41,12 @@ const Home = ({ title }) => {
         ) : null}
         <div className="bg-white shadow">
           <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-            <h1 className="text-3xl font-bold tracking-tight text-gray-900">{title}</h1>
+            <h1 className="text-3xl font-semibold tracking-tight text-gray-900">{title}</h1>
           </div>
         </div>
-        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8"></div>
+        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+          <FormComponent data={data} />
+        </div>
       </main>
     </>
   );

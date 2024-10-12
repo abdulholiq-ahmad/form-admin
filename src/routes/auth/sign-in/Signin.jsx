@@ -9,14 +9,22 @@ import { GrFormViewHide } from "react-icons/gr";
 
 const Signin = () => {
   const [signInRequest, { data, isSuccess, isError, error, isLoading }] = useSignInRequestMutation();
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const dispatch = useDispatch();
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const login = event.target.login.value;
+    if (login.length < 3) {
+      console.log("Login must be at least 3 characters long.");
+      return;
+    }
     const password = event.target.password.value;
+    if (password.length < 3) {
+      console.log("Password must be at least 3 characters long.");
+      return;
+    }
     signInRequest({ login, password });
   };
 
@@ -79,20 +87,25 @@ const Signin = () => {
                 <label htmlFor="password" className="sr-only">
                   Password
                 </label>
-                <div className="flex items-center border focus:outline-gray-800 rounded-md">
+
+                <div className="relative">
                   <input
                     id="password"
                     name="password"
                     type={!isPasswordVisible ? "password" : "text"}
                     autoComplete="current-password"
                     required
-                    className="relative block p-4 border-none w-full  py-1.5 text-gray-90 outline-gray- ring-1 ring-inset ring-gray-100 placeholder:text-gray-400 focus:z-10 focus:ring-inset sm:text-sm sm:leading-6"
+                    className="relative block p-4 w-full rounded-md border-0 py-1.5 text-gray-900 focus:outline-gray-800 outline-none ring-1 ring-inset ring-gray-100 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
                     placeholder="Password"
                   />
-                  {!isPasswordVisible ? (
-                    <GrFormViewHide onClick={() => setIsPasswordVisible(!isPasswordVisible)} />
+                  {isPasswordVisible ? (
+                    <button type="button" className="absolute z-50 right-4 top-1/2 -translate-y-1/2 cursor-pointer">
+                      <GrFormView onClick={handleChangeType} />
+                    </button>
                   ) : (
-                    <GrFormView onClick={() => setIsPasswordVisible(!isPasswordVisible)} />
+                    <button type="button" className="absolute z-50 right-4 top-1/2 -translate-y-1/2 cursor-pointer">
+                      <GrFormViewHide onClick={handleChangeType} />
+                    </button>
                   )}
                 </div>
               </div>
