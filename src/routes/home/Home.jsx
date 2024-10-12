@@ -1,12 +1,24 @@
-import FormComponent from "@/components/formComponent/FormComponent";
+import Chart from "@/components/chart/Chart";
 import { useGetQuestionsQuery } from "@/redux/api/questionApi";
 import { Alert } from "antd";
 import { memo, useEffect, useState } from "react";
+import { UserData } from "@/Data";
 
 const Home = ({ title }) => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [visible, setVisible] = useState(false);
-  const { data } = useGetQuestionsQuery();
+  const [userData, setUserData] = useState({
+    labels: UserData.map((data) => data.year),
+    datasets: [
+      {
+        label: "Users Gained",
+        data: UserData.map((data) => data.userGain),
+        backgroundColor: ["yellow"],
+        borderColor: "#111827",
+        borderWidth: 2,
+      },
+    ],
+  });
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -44,8 +56,8 @@ const Home = ({ title }) => {
             <h2 className="text-3xl font-semibold tracking-tight text-gray-900">{title}</h2>
           </div>
         </div>
-        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-          <FormComponent data={data} />
+        <div className="container">
+          <Chart chartData={userData} />
         </div>
       </main>
     </>
