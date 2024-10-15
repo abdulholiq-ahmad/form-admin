@@ -7,7 +7,6 @@ import { useSignInRequestMutation } from "@/redux/api/authApi";
 
 const Home = ({ title }) => {
   const [isSuccess] = useSignInRequestMutation({});
-  console.log(isSuccess);
   const [visible, setVisible] = useState(false);
   const [userData, setUserData] = useState({
     labels: UserData.map((data) => data.year),

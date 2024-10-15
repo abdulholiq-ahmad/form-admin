@@ -2,7 +2,7 @@ import { Outlet, useLocation, useRoutes } from "react-router-dom";
 import Header from "../components/header/Header";
 import Footer from "../components/footer/Footer";
 import Suspense from "../utils";
-import { lazy, memo } from "react";
+import { lazy, memo, useMemo } from "react";
 import Questions from "./questions/Questions";
 import CreateQuestions from "./questions/CreateQuestions";
 import SingleQuestion from "./singleQuestion/SingleQuestion";
@@ -12,15 +12,16 @@ const AuthLayout = lazy(() => import("./auth/authLayout/AuthLayout"));
 const Signin = lazy(() => import("./auth/sign-in/Signin"));
 const NotFound = lazy(() => import("./not-found/NotFound"));
 
-const Layout = ({ children }) => {
-  const isAuthRoute = useLocation().pathname.startsWith("/auth");
+const Layout = () => {
+  const location = useLocation();
+
+  const isAuthRoute = useMemo(() => location.pathname.startsWith("/auth"), [location.pathname]);
 
   return (
     <>
       {!isAuthRoute && <Header />}
       <Outlet />
       {!isAuthRoute && <Footer />}
-      {children}
     </>
   );
 };
@@ -55,7 +56,11 @@ const RouteController = () => {
               element: <CreateQuestions title={"Create a question"} />,
             },
             {
-              path: "/questions/:id",
+              path: "/single-question/:id/lang/:lang",
+              element: <SingleQuestion />,
+            },
+            {
+              path: "/edit-question/:id",
               element: <SingleQuestion />,
             },
           ],

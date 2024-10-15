@@ -77,46 +77,17 @@ function Form() {
     dispatch(setRequired({ questionIndex: index, value }));
   };
 
-  // Handle Option Change
-  const handleOptionChange = (e, index) => {
-    const updatedOptions = [...questionAnswers];
-    updatedOptions[index] = e.target.value;
-    setQuestionAnswers(updatedOptions);
-
-    dispatch(updateOption({ index, value: e.target.value }));
-  };
-
   const handleCloseAlert = () => {
     setVisible(!visible);
   };
 
-  // const renderOption = (option, questionType, index) => {
-  //   return (
-  //     <div className="flex gap-3" key={option}>
-  //       <div className="flex items-center gap-4 w-full">
-  //         {(questionType === "checkbox" && <IoIosCheckbox className="size-6 text-gray-700" />) ||
-  //           (questionType === "radio" && <IoIosRadioButtonOn className="size-6 text-gray-700" />) ||
-  //           (questionType === "dropdown" && <IoIosArrowDropdownCircle className="size-6 text-gray-700" />) ||
-  //           (questionType === "text" && <IoText className="size-6 text-gray-700" />)}
-  //         <input
-  //           required
-  //           className="w-full text-lg border rounded-md pl-2 py-1.5"
-  //           type="text"
-  //           placeholder="Option"
-  //           name="option"
-  //           value={option}
-  //           onChange={(e) => handleOptionChange(e, index)}
-  //         />
-  //       </div>
-  //       <button className="text-red-500" type="button" onClick={() => handleRemoveOption(index)}>
-  //         <MdDeleteOutline className="size-6" />
-  //       </button>
-  //     </div>
-  //   );
-  // };
+  // Handle Update Question
+  const handleUpdateQuestionText = (index, value) => {
+    dispatch(updateQuestion({ questionIndex: index, questionData: { questionText: value } }));
+    console.log("Question text updated:", value);
+  };
 
   // Render Question
-
   const renderQuestion = (question, index) => {
     return (
       <div key={index} className="relative p-3 flex flex-col gap-4 shadow rounded-xl">
@@ -126,6 +97,7 @@ function Form() {
             className="resize-y h-[40px] text-lg border rounded-md w-full pl-2 py-1.5"
             type="text"
             placeholder="Question"
+            onChange={(e) => handleUpdateQuestionText(index, e.target.value)}
             name="question"
             defaultValue={question.questionText}
           />
@@ -144,7 +116,10 @@ function Form() {
               <input
                 required
                 name="option"
-                onChange={(e) => handleUpdateOption(index, optionIndex, e.target.value)}
+                onChange={(e) => {
+                  console.log(e.target.value);
+                  handleUpdateOption(index, optionIndex, e.target.value);
+                }}
                 className="border rounded-md pl-2 w-full py-1"
                 type="text"
                 placeholder="Option"
@@ -217,109 +192,6 @@ function Form() {
     );
   };
 
-  // Create Questions
-  const createQuestions = (question, index) => {
-    return (
-      <div key={index} className="relative p-3 flex flex-col gap-4 shadow rounded-xl">
-        <div className="flex items-end gap-4">
-          <textarea
-            required
-            className="resize-y h-[40px] text-lg border rounded-md w-full pl-2 py-1.5"
-            type="text"
-            placeholder="Question"
-            name="question"
-            defaultValue={question?.questionText}
-          />
-
-          <TypeQuestion title={question?.questionType} handleChangeType={handleChangeType} />
-        </div>
-
-        {question?.options?.map((item, optionIndex) => (
-          <div key={optionIndex} className="flex gap-3">
-            <div className="flex items-center gap-4 w-full">
-              {(question?.questionType === "checkbox" && <IoIosCheckbox className="size-6 text-gray-700" />) ||
-                (question?.questionType === "radio" && <IoIosRadioButtonOn className="size-6 text-gray-700" />) ||
-                (question?.questionType === "dropdown" && <IoIosArrowDropdownCircle className="size-6 text-gray-700" />) ||
-                (question?.questionType === "text" && <IoText className="size-6 text-gray-700" />)}
-
-              <input
-                required
-                name="option"
-                onChange={(e) => {
-                  dispatch(updateOption({ index, value: e.target.value }));
-                }}
-                className="border rounded-md pl-2 w-full py-1"
-                type="text"
-                placeholder="Option"
-                defaultValue={item}
-              />
-            </div>
-
-            {question?.options.length > 1 && (
-              <button
-                type="button"
-                onClick={() => handleRemoveOption(optionIndex)}
-                className="border rounded-md px-3 bg-gray-800 text-white"
-              >
-                <IoClose className="size-4" />
-              </button>
-            )}
-          </div>
-        ))}
-
-        <div>
-          {question?.questionType !== "text" ? (
-            <button
-              onClick={() => handleAddOption(index)}
-              type="button"
-              className="text-blue-500 text-sm font-medium border-b inline-block hover:opacity-80"
-            >
-              Add option
-            </button>
-          ) : null}
-        </div>
-
-        <div className="flex items-center gap-3 ml-auto ">
-          <label className="flex items-center cursor-pointer relative">
-            <input
-              type="checkbox"
-              checked={question.required}
-              onChange={(e) => handleSetRequired(question, e.target.checked)}
-              className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded border border-slate-300 checked:bg-slate-800 checked:border-slate-800"
-              id={`required_${index}`}
-            />
-            <span className="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-3.5 w-3.5"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                stroke="currentColor"
-                strokeWidth="1"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                  clipRule="evenodd"
-                ></path>
-              </svg>
-            </span>
-          </label>
-          <label className="cursor-pointer" htmlFor={`required_${index}`}>
-            Required
-          </label>
-          <button
-            onClick={() => handleRemoveQuestion(index)}
-            type="button"
-            className="p-2 px-4 bg-gray-800 text-white rounded-md hover:bg-gray-700"
-          >
-            <MdDeleteOutline className="size-4" />
-          </button>
-        </div>
-      </div>
-    );
-  };
-
   // Handle Create Question
   const handleCreateQuestion = () => {
     const newQuestionData = {
@@ -330,7 +202,6 @@ function Form() {
     };
 
     dispatch(addQuestion(newQuestionData));
-    createQuestions(newQuestionData);
   };
 
   // Render Questions
@@ -357,23 +228,11 @@ function Form() {
 
     try {
       const result = await postQuestions(newQuestionData).unwrap();
+
+      e.target.reset();
       console.log("Savol muvaffaqiyatli yaratildi:", result.error || result);
 
-      dispatch(addQuestion(result));
       setQuestionAnswers([""]);
-
-      if (result.status === "FETCH_ERROR") {
-        return (
-          <Alert
-            className="flex items-center top-2 left-1/2 transform -translate-x-1/2 fixed"
-            message={result?.error}
-            type="error"
-            closable
-            onClose={() => handleCloseAlert}
-            showIcon
-          />
-        );
-      }
     } catch (error) {
       console.error("Savol yaratishda xato:", error);
     }

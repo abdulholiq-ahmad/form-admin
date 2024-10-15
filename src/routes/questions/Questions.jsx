@@ -3,8 +3,37 @@ import { memo } from "react";
 import { Link } from "react-router-dom";
 import { HiPencilAlt } from "react-icons/hi";
 import QuestionItem from "@/components/questions/QuestionItem";
+import { useGetQuestionsQuery, useGetSingeQuestionQuery } from "@/redux/api/questionApi";
+import ButtonLang from "@/components/button/ButtonLang";
 
 const Questions = ({ title }) => {
+  const { data: questionsData } = useGetQuestionsQuery({});
+  const { data: singleQuestionData } = useGetSingeQuestionQuery({});
+  console.log(singleQuestionData);
+
+  const questionsItem = questionsData?.form?.map((item) => (
+    <li
+      key={item._id}
+      className="p-4 flex items-center justify-between border border-gray-300 hover:cursor-pointer hover:bg-gray-200/20 transition-all ease-in duration-150 rounded-md"
+    >
+      <QuestionItem title={item.title} />
+
+      <div className="flex items-center px-2 gap-5">
+        <div className="flex items-center justify-center gap-3">
+          {["uz", "ru", "en"].map((lang) => (
+            <Link key={lang} to={`/single-question/${item._id}/lang/${lang}`}>
+              <ButtonLang lang={lang} />
+            </Link>
+          ))}
+        </div>
+
+        <Link to={`/edit-question/${item._id}`} className="group right-2 p-1 flex items-center justify-center h-full">
+          <HiPencilAlt className="group-hover:text-gray-600 text-xl text-gray-700" />
+        </Link>
+      </div>
+    </li>
+  ));
+
   return (
     <>
       <main className="min-h-full">
@@ -22,15 +51,7 @@ const Questions = ({ title }) => {
           </div>
         </div>
         <div className="container sm:px-6 lg:px-8 py-4">
-          <ul className="flex flex-col gap-3">
-            <li className="relative py-2 px-2 pr-9 flex items-center justify-between border-b-2 border-gray-300 hover:border-b-4 hover:border-r-4 hover:cursor-pointer hover:bg-gray-200/20 transition-all ease-in duration-150 rounded-md">
-              <QuestionItem />
-
-              <Link className="group absolute right-2 p-1 flex items-center justify-center h-full">
-                <HiPencilAlt className="group-hover:text-gray-600 text-xl text-gray-700" />
-              </Link>
-            </li>
-          </ul>
+          <ul className="flex flex-col gap-5">{questionsItem}</ul>
         </div>
       </main>
     </>

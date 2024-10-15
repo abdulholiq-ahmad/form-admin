@@ -9,6 +9,21 @@ const questionApi = api.injectEndpoints({
       }),
       providesTags: ["Questions"],
     }),
+    getSingeQuestion: build.query({
+      query: ({ id, lang }) => ({
+        url: `/survey/${id}/${lang}`,
+        method: "GET",
+      }),
+      providesTags: ["Questions"],
+    }),
+    postLanguage: build.mutation({
+      query: (body) => ({
+        url: "/survey",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Questions"],
+    }),
     postQuestion: build.mutation({
       query: (body) => ({
         url: "/survey",
@@ -20,4 +35,4 @@ const questionApi = api.injectEndpoints({
   }),
 });
 
-export const { usePostQuestionMutation, useGetQuestionsQuery } = questionApi;
+export const { usePostQuestionMutation, useGetQuestionsQuery, useGetSingeQuestionQuery } = questionApi;
