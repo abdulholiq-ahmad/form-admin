@@ -44,29 +44,28 @@ const Header = ({ title }) => {
     <>
       <Disclosure as="nav" className="bg-gray-800">
         <div className="container">
-          <div className="flex h-16 items-center justify-between">
+          <div className="flex h-16 items-center">
             <div className="flex items-center">
-              <Link to={"/"} className="flex-shrink-0 text-2xl text-white font-mono">
+              <Link to={"/"} className="flex-shrink-0 text-2xl text-white font-mono uppercase font-bold">
                 Logo
               </Link>
-
-              <div className="hidden md:block">
-                <div className="ml-10 flex items-baseline space-x-4">
-                  {navigation.map((item) => (
-                    <Link
-                      to={item.href}
-                      key={item.name}
-                      onClick={handleNavigation()}
-                      aria-current={item.current ? "page" : undefined}
-                      className={classNames(
-                        item.current ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white",
-                        "rounded-md px-3 py-2 text-sm font-medium"
-                      )}
-                    >
-                      {item.name}
-                    </Link>
-                  ))}
-                </div>
+            </div>
+            <div className="ml-auto hidden md:block">
+              <div className="flex items-baseline space-x-4">
+                {navigation.map((item) => (
+                  <Link
+                    to={item.href}
+                    key={item.name}
+                    onClick={handleNavigation()}
+                    aria-current={item.current ? "page" : undefined}
+                    className={classNames(
+                      item.current ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                      "rounded-md px-3 py-2 text-sm font-medium"
+                    )}
+                  >
+                    {item.name}
+                  </Link>
+                ))}
               </div>
             </div>
             <div className="hidden md:block">

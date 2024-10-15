@@ -3,19 +3,22 @@ import { useGetQuestionsQuery } from "@/redux/api/questionApi";
 import { Alert } from "antd";
 import { memo, useEffect, useState } from "react";
 import { UserData } from "@/Data";
+import { useSignInRequestMutation } from "@/redux/api/authApi";
 
 const Home = ({ title }) => {
-  const [isSuccess, setIsSuccess] = useState(false);
+  const [isSuccess] = useSignInRequestMutation({});
+  console.log(isSuccess);
   const [visible, setVisible] = useState(false);
   const [userData, setUserData] = useState({
     labels: UserData.map((data) => data.year),
     datasets: [
       {
-        label: "Users Gained",
+        label: "Created Questions",
         data: UserData.map((data) => data.userGain),
-        backgroundColor: ["yellow"],
-        borderColor: "#111827",
-        borderWidth: 2,
+        backgroundColor: ["#FADA5E"],
+        fill: false,
+        borderColor: ["#FADA5E"],
+        borderWidth: 1.5,
       },
     ],
   });
@@ -23,7 +26,6 @@ const Home = ({ title }) => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      setIsSuccess(true);
       setVisible(true);
 
       const timer = setTimeout(() => {
@@ -57,7 +59,9 @@ const Home = ({ title }) => {
           </div>
         </div>
         <div className="container">
-          <Chart chartData={userData} />
+          <div className="mt-5">
+            <Chart chartData={userData} />
+          </div>
         </div>
       </main>
     </>

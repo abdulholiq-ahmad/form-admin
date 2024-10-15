@@ -116,6 +116,7 @@ function Form() {
   // };
 
   // Render Question
+
   const renderQuestion = (question, index) => {
     return (
       <div key={index} className="relative p-3 flex flex-col gap-4 shadow rounded-xl">
@@ -182,7 +183,7 @@ function Form() {
               checked={question.required}
               onChange={(e) => handleSetRequired(index, e.target.checked)}
               className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded border border-slate-300 checked:bg-slate-800 checked:border-slate-800"
-              id="required"
+              id={`required-${index}`}
             />
             <span className="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
               <svg
@@ -201,7 +202,7 @@ function Form() {
               </svg>
             </span>
           </label>
-          <label className="cursor-pointer" htmlFor="required">
+          <label className="cursor-pointer" htmlFor={`required-${index}`}>
             Required
           </label>
           <button
@@ -246,7 +247,6 @@ function Form() {
                 name="option"
                 onChange={(e) => {
                   dispatch(updateOption({ index, value: e.target.value }));
-                  console.log(e.target.value);
                 }}
                 className="border rounded-md pl-2 w-full py-1"
                 type="text"
@@ -286,7 +286,7 @@ function Form() {
               checked={question.required}
               onChange={(e) => handleSetRequired(question, e.target.checked)}
               className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded border border-slate-300 checked:bg-slate-800 checked:border-slate-800"
-              id="required"
+              id={`required_${index}`}
             />
             <span className="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
               <svg
@@ -305,7 +305,7 @@ function Form() {
               </svg>
             </span>
           </label>
-          <label className="cursor-pointer" htmlFor="required">
+          <label className="cursor-pointer" htmlFor={`required_${index}`}>
             Required
           </label>
           <button

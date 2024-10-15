@@ -3,14 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   questionsList: [
     {
-      questions: [
-        {
-          questionType: "checkbox",
-          required: true,
-          questionText: "Question",
-          options: ["Option 1"],
-        },
-      ],
+      questions: [],
     },
   ],
   loading: false,
@@ -48,14 +41,17 @@ const questionSlice = createSlice({
       const { questionIndex, optionIndex } = action.payload;
       state.questionsList[0].questions[questionIndex].options.splice(optionIndex, 1);
     },
+
     setRequired: (state, action) => {
       const { questionIndex, value } = action.payload;
       state.questionsList[0].questions[questionIndex].required = value;
     },
+
     setQuestionsType: (state, action) => {
       const { questionIndex, value } = action.payload;
       state.questionsList[0].questions[questionIndex].questionType = value;
     },
+
     updateQuestion: (state, action) => {
       const { questionIndex, questionData } = action.payload;
       state.questionsList[0].questions[questionIndex] = {
