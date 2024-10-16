@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { usePostQuestionMutation } from "@/redux/api/questionApi";
 import {
-  setQuestions,
   addQuestion,
   updateOption,
   removeOption,
@@ -18,8 +17,6 @@ import { IoIosCheckbox, IoIosRadioButtonOn } from "react-icons/io";
 import { IoIosArrowDropdownCircle } from "react-icons/io";
 import { IoText } from "react-icons/io5";
 import { MdDeleteOutline } from "react-icons/md";
-import "./editor.css";
-import { Alert } from "antd";
 
 function Form() {
   const questionData = useSelector((state) => state.questions?.questionsList[0].questions || []);

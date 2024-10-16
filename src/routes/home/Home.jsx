@@ -1,5 +1,4 @@
 import Chart from "@/components/chart/Chart";
-import { useGetQuestionsQuery } from "@/redux/api/questionApi";
 import { Alert } from "antd";
 import { memo, useEffect, useState } from "react";
 import { UserData } from "@/Data";

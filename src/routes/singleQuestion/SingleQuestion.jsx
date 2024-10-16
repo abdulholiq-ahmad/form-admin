@@ -1,12 +1,12 @@
 import { useParams } from "react-router-dom";
 import { useGetSingeQuestionQuery } from "@/redux/api/questionApi";
 import Dropdown from "@/components/questions/Dropdown";
-import { useState } from "react"; // useState hookini import qilish
+import { useState } from "react";
 
 const SingleQuestion = () => {
   const { id, lang } = useParams();
   const { data } = useGetSingeQuestionQuery({ id, lang });
-  const [selectedDropdownOption, setSelectedDropdownOption] = useState(""); // Tanlangan dropdown qiymatini saqlash
+  const [selectedDropdownOption, setSelectedDropdownOption] = useState("");
 
   return (
     <div className="container flex items-center justify-center ">

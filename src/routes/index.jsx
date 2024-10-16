@@ -59,10 +59,6 @@ const RouteController = () => {
               path: "/single-question/:id/lang/:lang",
               element: <SingleQuestion />,
             },
-            {
-              path: "/edit-question/:id",
-              element: <SingleQuestion />,
-            },
           ],
         },
         {

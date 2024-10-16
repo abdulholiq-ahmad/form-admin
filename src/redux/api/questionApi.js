@@ -32,7 +32,29 @@ const questionApi = api.injectEndpoints({
       }),
       invalidatesTags: ["Questions"],
     }),
+    updateQeustion: build.mutation({
+      query: ({ questionIndex, questionData }) => ({
+        url: `/survey/${questionIndex}`,
+        method: "PATCH",
+        body: questionData,
+      }),
+      invalidatesTags: ["Questions"],
+    }),
+
+    deleteQuestion: build.mutation({
+      query: (id) => ({
+        url: `/survey/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Questions"],
+    }),
   }),
 });
 
-export const { usePostQuestionMutation, useGetQuestionsQuery, useGetSingeQuestionQuery } = questionApi;
+export const {
+  usePostQuestionMutation,
+  useGetQuestionsQuery,
+  useGetSingeQuestionQuery,
+  useUpdateQeustionMutation,
+  useDeleteQuestionMutation,
+} = questionApi;
