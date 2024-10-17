@@ -49,33 +49,24 @@ function Form() {
     }
   };
 
-  // Handle Remove Question
   const handleRemoveQuestion = (index) => {
     dispatch(removeQuestion(index));
   };
 
-  // Handle Add Option
   const handleAddOption = (questionIndex) => {
     dispatch(addOption({ questionIndex }));
   };
 
-  // Handle Update Option
   const handleUpdateOption = (questionIndex, optionIndex, value) => {
     dispatch(updateOption({ questionIndex, optionIndex, value }));
   };
 
-  // Handle Remove Option
   const handleRemoveOption = (questionIndex, optionIndex) => {
     dispatch(removeOption({ questionIndex, optionIndex }));
   };
 
-  // Handle Set Required
   const handleSetRequired = (index, value) => {
     dispatch(setRequired({ questionIndex: index, value }));
-  };
-
-  const handleCloseAlert = () => {
-    setVisible(!visible);
   };
 
   // Handle Update Question
@@ -149,32 +140,13 @@ function Form() {
         </div>
 
         <div className="flex items-center gap-3 ml-auto ">
-          <label className="flex items-center cursor-pointer relative">
+          <label className="flex items-center gap-2">
             <input
               type="checkbox"
               checked={question.required}
               onChange={(e) => handleSetRequired(index, e.target.checked)}
-              className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded border border-slate-300 checked:bg-slate-800 checked:border-slate-800"
-              id={`required-${index}`}
+              className="accent-gray-800 w-[15px] h-[15px]"
             />
-            <span className="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-3.5 w-3.5"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                stroke="currentColor"
-                strokeWidth="1"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                  clipRule="evenodd"
-                ></path>
-              </svg>
-            </span>
-          </label>
-          <label className="cursor-pointer" htmlFor={`required-${index}`}>
             Required
           </label>
           <button
@@ -237,7 +209,7 @@ function Form() {
 
   return (
     <>
-      <div className="container">
+      <div>
         <div className="w-full py-6">
           <form onSubmit={handleSubmit}>
             <div className="p-3 mb-8 shadow rounded-xl">
@@ -247,7 +219,7 @@ function Form() {
                   id="title"
                   type="text"
                   defaultValue="Untitled form"
-                  className="w-full border p-2 rounded-md text-3xl"
+                  className="w-full border p-2 rounded-md text-2xl"
                 />
                 <input
                   name="description"

@@ -1,27 +1,14 @@
+import { memo } from "react";
 import { IoAdd } from "react-icons/io5";
-import { memo, useState } from "react";
 import { Link } from "react-router-dom";
-import QuestionItem from "@/components/questions/QuestionItem";
 import { useGetQuestionsQuery } from "@/redux/api/questionApi";
+import QuestionItem from "@/components/questions/QuestionItem";
 import ButtonLang from "@/components/button/ButtonLang";
-import { Modal } from "antd";
+import BackButton from "@/components/button/BackButton";
 
 const Questions = ({ title }) => {
   const { data: questionsData } = useGetQuestionsQuery({});
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleOk = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
+  console.log(questionsData);
 
   const questionsItem = questionsData?.form?.map((item) => (
     <li
@@ -33,7 +20,9 @@ const Questions = ({ title }) => {
       <div className="flex items-center px-2 gap-5">
         <div className="flex items-center justify-center gap-3">
           {["uz", "ru", "en"].map((lang) => (
-            <ButtonLang onClick={showModal} key={lang} lang={lang} />
+            <Link key={lang} to={`/update-question/${item._id}`}>
+              <ButtonLang key={lang} lang={lang} />
+            </Link>
           ))}
         </div>
       </div>
@@ -57,15 +46,10 @@ const Questions = ({ title }) => {
           </div>
         </div>
         <div className="container sm:px-6 lg:px-8 py-4">
-          <ul className="flex flex-col gap-5">{questionsItem}</ul>
+          <BackButton />
+          <ul className="flex flex-col gap-5 mt-4">{questionsItem}</ul>
         </div>
       </main>
-
-      <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-      </Modal>
     </>
   );
 };

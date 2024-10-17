@@ -6,6 +6,7 @@ import { lazy, memo, useMemo } from "react";
 import Questions from "./questions/Questions";
 import CreateQuestions from "./questions/CreateQuestions";
 import SingleQuestion from "./singleQuestion/SingleQuestion";
+import UpdateQuestions from "./questions/UpdateQuestions";
 
 const Home = lazy(() => import("./home/Home"));
 const AuthLayout = lazy(() => import("./auth/authLayout/AuthLayout"));
@@ -58,6 +59,10 @@ const RouteController = () => {
             {
               path: "/single-question/:id/lang/:lang",
               element: <SingleQuestion />,
+            },
+            {
+              path: "/update-question/:id",
+              element: <UpdateQuestions title={"Update a question"} />,
             },
           ],
         },

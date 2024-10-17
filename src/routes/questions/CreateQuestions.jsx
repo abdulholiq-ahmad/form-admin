@@ -1,4 +1,4 @@
-import React from "react";
+import BackButton from "@/components/button/BackButton";
 import Form from "@/components/form/Form";
 
 const CreateQuestions = ({ title }) => {
@@ -9,7 +9,9 @@ const CreateQuestions = ({ title }) => {
           <h1 className="text-3xl font-semibold tracking-tight text-gray-900">{title}</h1>
         </div>
       </div>
-      <div>
+      <div className="container">
+        <BackButton />
+
         <Form />
       </div>
     </div>
