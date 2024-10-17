@@ -20,12 +20,10 @@ import { MdDeleteOutline } from "react-icons/md";
 
 function Form() {
   const questionData = useSelector((state) => state.questions?.questionsList[0].questions || []);
-  const [visible, setVisible] = useState(false);
   const [questionAnswers, setQuestionAnswers] = useState([""]);
   const [postQuestions] = usePostQuestionMutation();
   const dispatch = useDispatch();
 
-  // Handle Change Type
   const handleChangeType = (index, newType) => {
     if (newType === "text") {
       dispatch(
@@ -69,18 +67,16 @@ function Form() {
     dispatch(setRequired({ questionIndex: index, value }));
   };
 
-  // Handle Update Question
   const handleUpdateQuestionText = (index, value) => {
     dispatch(updateQuestion({ questionIndex: index, questionData: { questionText: value } }));
     console.log("Question text updated:", value);
   };
 
-  // Render Question
   const renderQuestion = (question, index) => {
     return (
       <div key={index} className="relative p-3 flex flex-col gap-4 shadow rounded-xl">
         <div className="flex items-end gap-4">
-          <textarea
+          <input
             required
             className="resize-y h-[40px] text-lg border rounded-md w-full pl-2 py-1.5"
             type="text"
@@ -105,7 +101,6 @@ function Form() {
                 required
                 name="option"
                 onChange={(e) => {
-                  console.log(e.target.value);
                   handleUpdateOption(index, optionIndex, e.target.value);
                 }}
                 className="border rounded-md pl-2 w-full py-1"
@@ -128,7 +123,7 @@ function Form() {
         ))}
 
         <div>
-          {question.questionType !== "text" ? (
+          {question.questionType !== "text" && (
             <button
               onClick={() => handleAddOption(index)}
               type="button"
@@ -136,7 +131,7 @@ function Form() {
             >
               Add option
             </button>
-          ) : null}
+          )}
         </div>
 
         <div className="flex items-center gap-3 ml-auto ">
@@ -161,7 +156,6 @@ function Form() {
     );
   };
 
-  // Handle Create Question
   const handleCreateQuestion = () => {
     const newQuestionData = {
       questionText: "Question Text",
@@ -173,7 +167,6 @@ function Form() {
     dispatch(addQuestion(newQuestionData));
   };
 
-  // Render Questions
   const renderQuestions = (questionData) => {
     return questionData.map((question, questionIndex) => (
       <div key={questionIndex} className="flex flex-col gap-4">
@@ -182,7 +175,6 @@ function Form() {
     ));
   };
 
-  // Handle Submit
   const handleSubmit = async (e) => {
     e.preventDefault();
 

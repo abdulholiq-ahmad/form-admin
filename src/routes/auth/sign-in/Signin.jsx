@@ -9,8 +9,8 @@ import { GrFormViewHide } from "react-icons/gr";
 
 const Signin = () => {
   const [signInRequest, { data, isSuccess, isError, error, isLoading }] = useSignInRequestMutation();
-  const dispatch = useDispatch();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleSubmit = (event) => {
@@ -29,9 +29,9 @@ const Signin = () => {
   };
 
   useEffect(() => {
-    if (isSuccess) {
-      localStorage.setItem("token", data.token);
-      dispatch(signIn(data.token));
+    if (isSuccess && data?.token) {
+      console.log(data);
+      dispatch(signIn(data?.token));
       navigate(`/`);
     }
   }, [isSuccess, data, navigate, dispatch]);
@@ -42,10 +42,10 @@ const Signin = () => {
 
   return (
     <div className="flex flex-col justify-center">
-      {isError && error?.data?.message ? (
+      {isError && error?.message ? (
         <Alert
           className="flex items-center top-2 left-2/4 translate-x-[-50%] absolute"
-          message={error.data.message}
+          message={error.message}
           type="error"
           closable
           showIcon

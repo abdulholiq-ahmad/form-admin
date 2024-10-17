@@ -7,7 +7,7 @@ import { MdDeleteOutline } from "react-icons/md";
 import TypeQuestion from "../form/FormRadio";
 import { useUpdateQeustionMutation } from "@/redux/api/questionApi";
 
-function UpdateForm({ data }) {
+function UpdateForm({ data, id }) {
   const [questionsList, setQuestionsList] = useState(data?.questions || []);
   const [updateQuestion] = useUpdateQeustionMutation();
 
@@ -29,11 +29,12 @@ function UpdateForm({ data }) {
         return <IoIosArrowDropdownCircle className="text-gray-700 size-6" />;
     }
   };
-  const handleCreateQuestions = () => {
+
+  const handleCreateQuestions = (newType) => {
     const newQuestionData = {
       questionText: "New Question Text",
-      questionType: "checkbox",
-      options: ["Option 1", "Option 2"],
+      questionType: newType || "checkbox",
+      options: newType === "text" ? ["Answer"] : ["Option 1", "Option 2"],
       required: false,
     };
 
@@ -73,7 +74,7 @@ function UpdateForm({ data }) {
     setQuestionsList((prevQuestions) => {
       return prevQuestions.map((question, index) => {
         if (index === questionIndex) {
-          return { ...question, questionType: newType };
+          return { ...question, questionType: newType, options: newType === "text" ? [""] : question.options };
         }
         return question;
       });
@@ -115,44 +116,60 @@ function UpdateForm({ data }) {
         </div>
 
         <div className="flex flex-col gap-3">
-          {question.options.map((option, optionIndex) => (
-            <div key={optionIndex} className="flex items-center gap-2 w-full">
+          {question.questionType === "text" ? (
+            <div className="flex items-center gap-2 w-full">
               {renderQuestionIcon(question.questionType)}
               <input
                 type="text"
-                value={option}
-                onChange={(e) => handleOptionTextChange(e, questionIndex, optionIndex)}
-                placeholder="Option"
+                value={question.options[0]}
+                onChange={(e) => handleOptionTextChange(e, questionIndex, 0)}
+                placeholder="Answer"
                 className="border rounded-md pl-2 w-full py-1.5"
                 required
               />
-              {question.options.length > 1 && (
-                <button
-                  type="button"
-                  onClick={() => handleDeleteOption(questionIndex, optionIndex)}
-                  className="border rounded-md px-3 py-2 bg-gray-800 text-white hover:bg-gray-600"
-                  title="Delete Option"
-                >
-                  <IoClose />
-                </button>
-              )}
             </div>
-          ))}
+          ) : (
+            question.options.map((option, optionIndex) => (
+              <div key={optionIndex} className="flex items-center gap-2 w-full">
+                {renderQuestionIcon(question.questionType)}
+                <input
+                  type="text"
+                  value={option}
+                  onChange={(e) => handleOptionTextChange(e, questionIndex, optionIndex)}
+                  placeholder="Option"
+                  className="border rounded-md pl-2 w-full py-1.5"
+                  required
+                />
+                {question.options.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteOption(questionIndex, optionIndex)}
+                    className="border rounded-md px-3 py-2 bg-gray-800 text-white hover:bg-gray-600"
+                    title="Delete Option"
+                  >
+                    <IoClose />
+                  </button>
+                )}
+              </div>
+            ))
+          )}
         </div>
 
-        <button
-          type="button"
-          onClick={() => {
-            setQuestionsList((prevQuestions) => {
-              const updatedQuestions = [...prevQuestions];
-              updatedQuestions[questionIndex].options.push(`Option ${updatedQuestions[questionIndex].options.length + 1}`);
-              return updatedQuestions;
-            });
-          }}
-          className="self-start bg-transparent text-blue-500 text-sm border-b border-gray-400"
-        >
-          Add Option
-        </button>
+        {question.questionType !== "text" && (
+          <button
+            type="button"
+            onClick={() => {
+              setQuestionsList((prevQuestions) => {
+                const updatedQuestions = [...prevQuestions];
+                updatedQuestions[questionIndex].options.push(`Option ${updatedQuestions[questionIndex].options.length + 1}`);
+                return updatedQuestions;
+              });
+            }}
+            className="self-start bg-transparent text-blue-500 text-sm border-b border-gray-400"
+          >
+            Add Option
+          </button>
+        )}
 
         <div className="flex items-center gap-3 ml-auto ">
           <label className="flex items-center gap-2">
@@ -184,7 +201,10 @@ function UpdateForm({ data }) {
       description: e.target.description.value,
       questions: questionsList,
     };
-    updateQuestion(updatedData);
+    updateQuestion({
+      questionIndex: id,
+      questionData: updatedData,
+    });
     console.log("Updated questions:", updatedData);
   };
 
@@ -222,14 +242,14 @@ function UpdateForm({ data }) {
         <div className="flex items-center justify-between">
           <button
             type="button"
-            onClick={handleCreateQuestions}
+            onClick={() => handleCreateQuestions()}
             className="mt-4 p-2 px-4 bg-gray-800 text-white rounded-md hover:bg-gray-700"
           >
             Add Question
           </button>
 
           <button type="submit" className="mt-4 p-2 px-4 bg-gray-800 text-white rounded-md hover:bg-gray-700">
-            Update Questions
+            Update
           </button>
         </div>
       </form>

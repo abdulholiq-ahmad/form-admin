@@ -16,7 +16,7 @@ const UpdateQuestions = ({ title }) => {
       </div>
       <div className="container">
         <BackButton />
-        <UpdateForm data={singleData} />
+        <UpdateForm data={singleData} id={id} />
       </div>
     </>
   );
