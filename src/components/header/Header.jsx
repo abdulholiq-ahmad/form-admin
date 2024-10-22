@@ -40,6 +40,22 @@ const Header = ({ title }) => {
       navigation[1].current = true;
     }
   };
+
+  const handleClose = function () {
+    setConfirmLogOut(false);
+  };
+
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      setConfirmLogOut(false);
+    }
+  });
+
+  const handleConfirm = function () {
+    dispatch(signOut());
+    window.location.reload();
+  };
+
   return (
     <>
       <Disclosure as="nav" className="bg-gray-800">
@@ -165,25 +181,22 @@ const Header = ({ title }) => {
       {confirmLogOut ? (
         <div className="w-full h-full absolute top-0 left-0 bg-gray-800/70 z-10">
           <Alert
-            className="absolute top-2/4 left-2/4 z-30 bg-white transform -translate-x-2/4 -translate-y-2/4 text-2xl font-semibold p-4 w-[300px] h-[200px] flex flex-col justify-between items-end"
-            message="Do you want to log out of your account?"
+            className="absolute top-2/4 left-2/4 z-30 bg-white transform -translate-x-2/4 -translate-y-2/4 text-xl font-semibold p-4 w-[300px] h-[180px] flex flex-col justify-between items-center text-center"
+            message="Are you sure you want to logout? Any unsaved data will be lost."
             type="simple"
             action={
-              <Space className="mt-5 flex items-start justify-end" direction="horizontal">
+              <Space className="flex items-center justify-center" direction="horizontal">
                 <button
-                  className="p-2 border border-gray-800 bg-gray-800 rounded-md text-base text-white"
-                  onClick={() => {
-                    dispatch(signOut());
-                    window.location.reload();
-                  }}
+                  className="p-2 px-3 border border-gray-800 bg-gray-800 rounded-md text-sm text-white hover:opacity-80 active:opacity-70"
+                  onClick={() => handleConfirm()}
                 >
-                  Accept
+                  Confirm
                 </button>
                 <button
-                  className="p-2 w-full text-base border border-gray-800 bg-transparent rounded-md text-gray-800"
-                  onClick={() => setConfirmLogOut(false)}
+                  className="p-2 px-3 border border-gray-500 bg-white rounded-md text-sm text-gray-800 hover:opacity-80 active:opacity-70"
+                  onClick={() => handleClose()}
                 >
-                  Decline
+                  Cancel
                 </button>
               </Space>
             }

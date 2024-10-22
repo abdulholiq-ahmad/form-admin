@@ -43,13 +43,7 @@ const Signin = () => {
   return (
     <div className="flex flex-col justify-center">
       {isError && error?.message ? (
-        <Alert
-          className="flex items-center top-2 left-2/4 translate-x-[-50%] absolute"
-          message={error.message}
-          type="error"
-          closable
-          showIcon
-        />
+        <Alert className="flex items-center top-2 left-2/4 translate-x-[-50%] absolute" message={error.message} type="error" closable showIcon />
       ) : null}
 
       {isSuccess ? (

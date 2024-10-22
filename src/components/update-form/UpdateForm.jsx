@@ -7,7 +7,7 @@ import { MdDeleteOutline } from "react-icons/md";
 import TypeQuestion from "../form/FormRadio";
 import { useUpdateQeustionMutation } from "@/redux/api/questionApi";
 
-function UpdateForm({ data, id }) {
+function UpdateForm({ data, id, lang }) {
   const [questionsList, setQuestionsList] = useState(data?.questions || []);
   const [updateQuestion] = useUpdateQeustionMutation();
 
@@ -44,9 +44,15 @@ function UpdateForm({ data, id }) {
 
   const handleDeleteOption = (questionIndex, optionIndex) => {
     setQuestionsList((prevQuestions) => {
-      const updatedQuestions = [...prevQuestions];
-      const updatedOptions = updatedQuestions[questionIndex].options.filter((_, idx) => idx !== optionIndex);
-      updatedQuestions[questionIndex].options = updatedOptions;
+      const updatedQuestions = prevQuestions.map((question, qIndex) => {
+        if (qIndex === questionIndex) {
+          return {
+            ...question,
+            options: question.options.filter((_, idx) => idx !== optionIndex),
+          };
+        }
+        return question;
+      });
       return updatedQuestions;
     });
     console.log(`Deleted option ${optionIndex} from question ${questionIndex}`);
@@ -203,6 +209,7 @@ function UpdateForm({ data, id }) {
     };
     updateQuestion({
       questionIndex: id,
+      questionLang: lang,
       questionData: updatedData,
     });
     console.log("Updated questions:", updatedData);

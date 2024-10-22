@@ -1,7 +1,7 @@
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useGetSingeQuestionQuery } from "@/redux/api/questionApi";
 import Dropdown from "@/components/questions/Dropdown";
-import { useState } from "react";
 
 const SingleQuestion = () => {
   const { id, lang } = useParams();

@@ -61,7 +61,7 @@ const RouteController = () => {
               element: <SingleQuestion />,
             },
             {
-              path: "/update-question/:id",
+              path: "/update-question/:id/lang/:lang",
               element: <UpdateQuestions title={"Update a question"} />,
             },
           ],

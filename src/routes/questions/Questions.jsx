@@ -20,7 +20,7 @@ const Questions = ({ title }) => {
       <div className="flex items-center px-2 gap-5">
         <div className="flex items-center justify-center gap-3">
           {["uz", "ru", "en"].map((lang) => (
-            <Link key={lang} to={`/update-question/${item._id}`}>
+            <Link key={lang} to={`/update-question/${item._id}/lang/${lang}`}>
               <ButtonLang key={lang} lang={lang} />
             </Link>
           ))}

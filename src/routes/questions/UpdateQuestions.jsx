@@ -4,7 +4,7 @@ import { useGetSingeQuestionQuery } from "@/redux/api/questionApi";
 import { useParams } from "react-router-dom";
 
 const UpdateQuestions = ({ title }) => {
-  const { id } = useParams();
+  const { id, lang } = useParams();
   const { data: singleData } = useGetSingeQuestionQuery({ id, lang: "ru" });
 
   return (
@@ -16,7 +16,7 @@ const UpdateQuestions = ({ title }) => {
       </div>
       <div className="container">
         <BackButton />
-        <UpdateForm data={singleData} id={id} />
+        <UpdateForm data={singleData} id={id} lang={lang} />
       </div>
     </>
   );

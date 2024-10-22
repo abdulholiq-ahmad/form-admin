@@ -34,7 +34,7 @@ const questionApi = api.injectEndpoints({
     }),
     updateQeustion: build.mutation({
       query: ({ questionIndex, questionData }) => ({
-        url: `/survey/${questionIndex}`,
+        url: `/survey/${questionIndex},`,
         method: "PATCH",
         body: questionData,
       }),
