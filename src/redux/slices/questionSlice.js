@@ -20,6 +20,9 @@ const questionSlice = createSlice({
     addQuestion: (state, action) => {
       state.questionsList[0].questions.push(action.payload);
     },
+    removeAllQuestions: (state) => {
+      state.questionsList = [];
+    },
     removeQuestion: (state, action) => {
       state.questionsList[0].questions = state.questionsList[0].questions.filter((_, i) => i !== action.payload);
     },
@@ -74,6 +77,7 @@ export const {
   setRequired,
   setQuestionsType,
   updateQuestion,
+  removeAllQuestions,
 } = questionSlice.actions;
 
 export default questionSlice.reducer;

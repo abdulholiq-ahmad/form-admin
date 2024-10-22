@@ -22,7 +22,27 @@ const authApi = api.injectEndpoints({
         }
       },
     }),
+
+    checkUserRequest: build.query({
+      query: () => ({
+        url: "/auth/verify",
+        method: "GET",
+      }),
+      providesTags: ["Users"],
+
+      async onQueryStarted(args, { queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          console.log("Response data:", data);
+          if (data?.token) {
+            localStorage.setItem("token", data.token);
+          }
+        } catch (error) {
+          console.error("Failed to save token:", error);
+        }
+      },
+    }),
   }),
 });
 
-export const { useSignInRequestMutation } = authApi;
+export const { useSignInRequestMutation, useCheckUserQueryRequest } = authApi;

@@ -1,11 +1,13 @@
 import { createApi, fetchBaseQuery, retry } from "@reduxjs/toolkit/query/react";
 import { signOut } from "../slices/authSlice";
+const isDev = true;
+const url = isDev ? import.meta.env.VITE_API_BASE_URL_LOCAL : import.meta.env.VITE_API_BASE_URL_SERVER;
 
 const baseQuery = async (args, api, extraOptions) => {
   const { dispatch } = api;
 
   const rawBaseQuery = fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_API_BASE_URL,
+    baseUrl: url,
     prepareHeaders: (headers) => {
       const token = localStorage.getItem("token");
       if (token) {

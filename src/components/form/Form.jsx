@@ -9,6 +9,7 @@ import {
   addOption,
   setRequired,
   updateQuestion,
+  removeAllQuestions,
 } from "@/redux/slices/questionSlice";
 import TypeQuestion from "./FormRadio";
 import { IoClose } from "react-icons/io5";
@@ -17,9 +18,11 @@ import { IoIosCheckbox, IoIosRadioButtonOn } from "react-icons/io";
 import { IoIosArrowDropdownCircle } from "react-icons/io";
 import { IoText } from "react-icons/io5";
 import { MdDeleteOutline } from "react-icons/md";
+import SuccessMessage from "../message/Success";
 
 function Form() {
-  const questionData = useSelector((state) => state.questions?.questionsList[0].questions || []);
+  const questionData = useSelector((state) => state.questions?.questionsList[0]?.questions || []);
+  const [success, setSuccess] = useState(false);
   const [questionAnswers, setQuestionAnswers] = useState([""]);
   const [postQuestions] = usePostQuestionMutation();
   const dispatch = useDispatch();
@@ -111,11 +114,7 @@ function Form() {
             </div>
 
             {question.options.length > 1 && (
-              <button
-                type="button"
-                onClick={() => handleRemoveOption(index, optionIndex)}
-                className="border rounded-md px-3 bg-gray-800 text-white"
-              >
+              <button type="button" onClick={() => handleRemoveOption(index, optionIndex)} className="border rounded-md px-3 bg-gray-800 text-white">
                 <IoClose className="size-4" />
               </button>
             )}
@@ -144,11 +143,7 @@ function Form() {
             />
             Required
           </label>
-          <button
-            onClick={() => handleRemoveQuestion(index)}
-            type="button"
-            className="p-2 px-4 bg-gray-800 text-white rounded-md hover:bg-gray-700"
-          >
+          <button onClick={() => handleRemoveQuestion(index)} type="button" className="p-2 px-4 bg-gray-800 text-white rounded-md hover:bg-gray-700">
             <MdDeleteOutline className="size-4" />
           </button>
         </div>
@@ -188,10 +183,14 @@ function Form() {
     console.log(newQuestionData);
 
     try {
-      const result = await postQuestions(newQuestionData).unwrap();
+      const result = await postQuestions(newQuestionData)
+        .unwrap()
+        .then(() => setSuccess(true));
 
       e.target.reset();
-      console.log("Savol muvaffaqiyatli yaratildi:", result.error || result);
+      dispatch(removeAllQuestions());
+
+      console.log("Savol muvaffaqiyatli yaratildi:", result?.error || result);
 
       setQuestionAnswers([""]);
     } catch (error) {
@@ -202,17 +201,12 @@ function Form() {
   return (
     <>
       <div>
+        {success && <SuccessMessage />}
         <div className="w-full py-6">
           <form onSubmit={handleSubmit}>
             <div className="p-3 mb-8 shadow rounded-xl">
               <div className="flex flex-col gap-4">
-                <input
-                  name="title"
-                  id="title"
-                  type="text"
-                  defaultValue="Untitled form"
-                  className="w-full border p-2 rounded-md text-2xl"
-                />
+                <input name="title" id="title" type="text" defaultValue="Untitled form" className="w-full border p-2 rounded-md text-2xl" />
                 <input
                   name="description"
                   id="description"
@@ -226,11 +220,7 @@ function Form() {
             <div className="flex flex-col gap-4">{renderQuestions(questionData)}</div>
 
             <div className="mt-6 flex items-center justify-between">
-              <button
-                onClick={() => handleCreateQuestion()}
-                className="p-2 px-5 bg-gray-800 text-white rounded-md hover:bg-gray-700"
-                type="button"
-              >
+              <button onClick={() => handleCreateQuestion()} className="p-2 px-5 bg-gray-800 text-white rounded-md hover:bg-gray-700" type="button">
                 Add Question
               </button>
               <button type="submit" className="p-2 px-5 bg-gray-800 text-white rounded-md hover:bg-gray-700">

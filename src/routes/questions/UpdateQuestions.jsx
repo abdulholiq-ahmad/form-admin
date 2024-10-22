@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 
 const UpdateQuestions = ({ title }) => {
   const { id, lang } = useParams();
-  const { data: singleData } = useGetSingeQuestionQuery({ id, lang: "ru" });
+  const { data: singleData } = useGetSingeQuestionQuery({ id, lang });
 
   return (
     <>

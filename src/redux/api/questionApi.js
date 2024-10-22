@@ -9,6 +9,7 @@ const questionApi = api.injectEndpoints({
       }),
       providesTags: ["Questions"],
     }),
+
     getSingeQuestion: build.query({
       query: ({ id, lang }) => ({
         url: `/survey/${id}/${lang}`,
@@ -16,6 +17,7 @@ const questionApi = api.injectEndpoints({
       }),
       providesTags: ["Questions"],
     }),
+
     postLanguage: build.mutation({
       query: (body) => ({
         url: "/survey",
@@ -24,6 +26,7 @@ const questionApi = api.injectEndpoints({
       }),
       invalidatesTags: ["Questions"],
     }),
+
     postQuestion: build.mutation({
       query: (body) => ({
         url: "/survey",
@@ -32,9 +35,10 @@ const questionApi = api.injectEndpoints({
       }),
       invalidatesTags: ["Questions"],
     }),
+
     updateQeustion: build.mutation({
-      query: ({ questionIndex, questionData }) => ({
-        url: `/survey/${questionIndex},`,
+      query: ({ questionIndex, questionData, questionLang }) => ({
+        url: `/survey/${questionIndex}/${questionLang}`,
         method: "PATCH",
         body: questionData,
       }),
@@ -51,10 +55,5 @@ const questionApi = api.injectEndpoints({
   }),
 });
 
-export const {
-  usePostQuestionMutation,
-  useGetQuestionsQuery,
-  useGetSingeQuestionQuery,
-  useUpdateQeustionMutation,
-  useDeleteQuestionMutation,
-} = questionApi;
+export const { usePostQuestionMutation, useGetQuestionsQuery, useGetSingeQuestionQuery, useUpdateQeustionMutation, useDeleteQuestionMutation } =
+  questionApi;

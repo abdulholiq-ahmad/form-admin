@@ -6,6 +6,8 @@ import Dropdown from "@/components/questions/Dropdown";
 const SingleQuestion = () => {
   const { id, lang } = useParams();
   const { data } = useGetSingeQuestionQuery({ id, lang });
+
+  console.log(data);
   const [selectedDropdownOption, setSelectedDropdownOption] = useState("");
 
   return (

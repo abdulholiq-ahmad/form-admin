@@ -4,8 +4,8 @@ import { IoIosCheckbox, IoIosRadioButtonOn } from "react-icons/io";
 import { IoIosArrowDropdownCircle } from "react-icons/io";
 import { IoText } from "react-icons/io5";
 import { MdDeleteOutline } from "react-icons/md";
-import TypeQuestion from "../form/FormRadio";
 import { useUpdateQeustionMutation } from "@/redux/api/questionApi";
+import TypeQuestion from "../form/FormRadio";
 
 function UpdateForm({ data, id, lang }) {
   const [questionsList, setQuestionsList] = useState(data?.questions || []);
@@ -104,21 +104,19 @@ function UpdateForm({ data, id, lang }) {
   };
 
   const renderQuestions = () => {
-    return questionsList.map((question, questionIndex) => (
+    const filteredQuestions = questionsList.filter((question) => question.options && question.options.length > 0);
+    return filteredQuestions.map((question, questionIndex) => (
       <div key={questionIndex} className="flex flex-col gap-6 p-4 border rounded-md shadow">
         <div className="flex gap-2">
           <input
             type="text"
             value={question.questionText}
             onChange={(e) => handleQuestionTextChange(e, questionIndex)}
-            placeholder="Enter question text"
+            placeholder="Question text"
             className="border rounded-md pl-2 w-full py-1"
             required
           />
-          <TypeQuestion
-            title={question.questionType}
-            handleChangeType={(newType) => handleQuestionTypeChange(newType, questionIndex)}
-          />
+          <TypeQuestion title={question.questionType} handleChangeType={(newType) => handleQuestionTypeChange(newType, questionIndex)} />
         </div>
 
         <div className="flex flex-col gap-3">
@@ -227,7 +225,7 @@ function UpdateForm({ data, id, lang }) {
             onChange={(e) => {
               console.log(e.target.value);
             }}
-            placeholder="Questionnaire Title"
+            placeholder="Question title"
             className="border rounded-md pl-2 py-2 text-2xl"
             required
           />
@@ -238,7 +236,7 @@ function UpdateForm({ data, id, lang }) {
             onChange={(e) => {
               console.log(e.target.value);
             }}
-            placeholder="Questionnaire Description"
+            placeholder="Question description"
             className="border rounded-md pl-2 py-2"
             required
           />
@@ -247,11 +245,7 @@ function UpdateForm({ data, id, lang }) {
         <div>{renderQuestions()}</div>
 
         <div className="flex items-center justify-between">
-          <button
-            type="button"
-            onClick={() => handleCreateQuestions()}
-            className="mt-4 p-2 px-4 bg-gray-800 text-white rounded-md hover:bg-gray-700"
-          >
+          <button type="button" onClick={() => handleCreateQuestions()} className="mt-4 p-2 px-4 bg-gray-800 text-white rounded-md hover:bg-gray-700">
             Add Question
           </button>
 
