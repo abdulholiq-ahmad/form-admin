@@ -37,9 +37,9 @@ const questionApi = api.injectEndpoints({
     }),
 
     updateQeustion: build.mutation({
-      query: ({ questionIndex, questionData, questionLang }) => ({
-        url: `/survey/${questionIndex}/${questionLang}`,
-        method: "PATCH",
+      query: ({ questionData }) => ({
+        url: `/survey`,
+        method: "PUT",
         body: questionData,
       }),
       invalidatesTags: ["Questions"],

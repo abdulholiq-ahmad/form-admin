@@ -9,7 +9,14 @@ import TypeQuestion from "../form/FormRadio";
 
 function UpdateForm({ data, id, lang }) {
   const [questionsList, setQuestionsList] = useState(data?.questions || []);
+  const [disabled, setDisabled] = useState(false);
   const [updateQuestion] = useUpdateQeustionMutation();
+
+  useEffect(() => {
+    if (lang === "en" || lang === "uz") {
+      setDisabled(true);
+    }
+  }, [disabled]);
 
   useEffect(() => {
     if (data?.questions) {
@@ -38,8 +45,7 @@ function UpdateForm({ data, id, lang }) {
       required: false,
     };
 
-    setQuestionsList((prevQuestions) => [...prevQuestions, { ...newQuestionData }]);
-    console.log("Added new question");
+    setQuestionsList((prevQuestions) => [...prevQuestions, newQuestionData]);
   };
 
   const handleDeleteOption = (questionIndex, optionIndex) => {
@@ -55,14 +61,17 @@ function UpdateForm({ data, id, lang }) {
       });
       return updatedQuestions;
     });
-    console.log(`Deleted option ${optionIndex} from question ${questionIndex}`);
   };
 
   const handleQuestionTextChange = (e, questionIndex) => {
     const newText = e.target.value;
     setQuestionsList((prevQuestions) => {
-      const updatedQuestions = [...prevQuestions];
-      updatedQuestions[questionIndex].questionText = newText;
+      const updatedQuestions = prevQuestions.map((question, index) => {
+        if (index === questionIndex) {
+          return { ...question, questionText: newText };
+        }
+        return question;
+      });
       return updatedQuestions;
     });
   };
@@ -70,9 +79,20 @@ function UpdateForm({ data, id, lang }) {
   const handleOptionTextChange = (e, questionIndex, optionIndex) => {
     const newOptionText = e.target.value;
     setQuestionsList((prevQuestions) => {
-      const updatedQuestions = [...prevQuestions];
-      updatedQuestions[questionIndex].options[optionIndex] = newOptionText;
-      return updatedQuestions;
+      return prevQuestions.map((question, index) => {
+        if (index === questionIndex) {
+          return {
+            ...question,
+            options: question.options.map((option, idx) => {
+              if (idx === optionIndex) {
+                return newOptionText;
+              }
+              return option;
+            }),
+          };
+        }
+        return question;
+      });
     });
   };
 
@@ -80,12 +100,12 @@ function UpdateForm({ data, id, lang }) {
     setQuestionsList((prevQuestions) => {
       return prevQuestions.map((question, index) => {
         if (index === questionIndex) {
-          return { ...question, questionType: newType, options: newType === "text" ? [""] : question.options };
+          const updatedOptions = newType === "text" ? [""] : question.options;
+          return { ...question, questionType: newType, options: updatedOptions };
         }
         return question;
       });
     });
-    console.log(`Question ${questionIndex} type changed to ${newType}`);
   };
 
   const handleRemoveQuestion = (questionIndex) => {
@@ -110,13 +130,17 @@ function UpdateForm({ data, id, lang }) {
         <div className="flex gap-2">
           <input
             type="text"
-            value={question.questionText}
+            value={lang === "ru" ? question.questionText : undefined}
             onChange={(e) => handleQuestionTextChange(e, questionIndex)}
-            placeholder="Question text"
+            placeholder={question.questionText}
             className="border rounded-md pl-2 w-full py-1"
             required
           />
-          <TypeQuestion title={question.questionType} handleChangeType={(newType) => handleQuestionTypeChange(newType, questionIndex)} />
+          <TypeQuestion
+            disabled={disabled}
+            title={question.questionType}
+            handleChangeType={(newType) => handleQuestionTypeChange(newType, questionIndex)}
+          />
         </div>
 
         <div className="flex flex-col gap-3">
@@ -125,9 +149,9 @@ function UpdateForm({ data, id, lang }) {
               {renderQuestionIcon(question.questionType)}
               <input
                 type="text"
-                value={question.options[0]}
+                value={lang === "ru" ? question.options[0] : undefined}
                 onChange={(e) => handleOptionTextChange(e, questionIndex, 0)}
-                placeholder="Answer"
+                placeholder={question.options[0]}
                 className="border rounded-md pl-2 w-full py-1.5"
                 required
               />
@@ -138,17 +162,20 @@ function UpdateForm({ data, id, lang }) {
                 {renderQuestionIcon(question.questionType)}
                 <input
                   type="text"
-                  value={option}
+                  value={lang === "ru" ? option : undefined}
                   onChange={(e) => handleOptionTextChange(e, questionIndex, optionIndex)}
-                  placeholder="Option"
+                  placeholder={option}
                   className="border rounded-md pl-2 w-full py-1.5"
                   required
                 />
                 {question.options.length > 1 && (
                   <button
+                    disabled={disabled}
                     type="button"
                     onClick={() => handleDeleteOption(questionIndex, optionIndex)}
-                    className="border rounded-md px-3 py-2 bg-gray-800 text-white hover:bg-gray-600"
+                    className={`border rounded-md px-3 py-2 bg-gray-800 text-white hover:bg-gray-600 ${
+                      disabled ? "cursor-not-allowed opacity-80" : "cursor-pointer"
+                    }`}
                     title="Delete Option"
                   >
                     <IoClose />
@@ -161,6 +188,7 @@ function UpdateForm({ data, id, lang }) {
 
         {question.questionType !== "text" && (
           <button
+            disabled={disabled}
             type="button"
             onClick={() => {
               setQuestionsList((prevQuestions) => {
@@ -169,26 +197,30 @@ function UpdateForm({ data, id, lang }) {
                 return updatedQuestions;
               });
             }}
-            className="self-start bg-transparent text-blue-500 text-sm border-b border-gray-400"
+            className={`self-start bg-transparent ${
+              disabled ? "cursor-not-allowed opacity-80" : "cursor-pointer"
+            }   text-blue-500 text-sm border-b border-gray-400`}
           >
             Add Option
           </button>
         )}
 
         <div className="flex items-center gap-3 ml-auto ">
-          <label className="flex items-center gap-2">
+          <label className={`flex items-center gap-2 ${disabled ? "cursor-not-allowed opacity-70" : "cursor-pointer"}`}>
             <input
+              disabled={disabled}
               type="checkbox"
               checked={question.required}
               onChange={() => handleSetRequired(questionIndex, !question.required)}
-              className="accent-gray-800 w-[15px] h-[15px]"
+              className={`accent-gray-800 w-[15px] h-[15px] ${disabled ? "cursor-not-allowed opacity-70" : "cursor-pointer"}`}
             />
             Required
           </label>
           <button
+            disabled={disabled}
             type="button"
             onClick={() => handleRemoveQuestion(questionIndex)}
-            className="p-2 px-4 bg-gray-800 text-white rounded-md hover:bg-gray-700"
+            className={`p-2 px-4  ${disabled ? "bg-gray-600 cursor-not-allowed" : "bg-gray-800 hover:bg-gray-700"} text-white rounded-md`}
             title="Remove Question"
           >
             <MdDeleteOutline />
@@ -203,14 +235,13 @@ function UpdateForm({ data, id, lang }) {
     const updatedData = {
       title: e.target.title.value,
       description: e.target.description.value,
+      _id: id,
+      language: lang,
       questions: questionsList,
     };
     updateQuestion({
-      questionIndex: id,
-      questionLang: lang,
       questionData: updatedData,
     });
-    console.log("Updated questions:", updatedData);
   };
 
   return (
@@ -221,10 +252,7 @@ function UpdateForm({ data, id, lang }) {
             type="text"
             name="title"
             id="title"
-            defaultValue={data?.title || ""}
-            onChange={(e) => {
-              console.log(e.target.value);
-            }}
+            defaultValue={lang === "ru" ? data?.title : undefined}
             placeholder="Question title"
             className="border rounded-md pl-2 py-2 text-2xl"
             required
@@ -232,10 +260,7 @@ function UpdateForm({ data, id, lang }) {
           <input
             name="description"
             id="description"
-            defaultValue={data?.description || ""}
-            onChange={(e) => {
-              console.log(e.target.value);
-            }}
+            defaultValue={lang === "ru" ? data?.description : undefined}
             placeholder="Question description"
             className="border rounded-md pl-2 py-2"
             required
@@ -245,9 +270,17 @@ function UpdateForm({ data, id, lang }) {
         <div>{renderQuestions()}</div>
 
         <div className="flex items-center justify-between">
-          <button type="button" onClick={() => handleCreateQuestions()} className="mt-4 p-2 px-4 bg-gray-800 text-white rounded-md hover:bg-gray-700">
-            Add Question
-          </button>
+          {!disabled ? (
+            <button
+              type="button"
+              onClick={() => handleCreateQuestions()}
+              className="mt-4 p-2 px-4 bg-gray-800 text-white rounded-md hover:bg-gray-700"
+            >
+              Add Question
+            </button>
+          ) : (
+            ""
+          )}
 
           <button type="submit" className="mt-4 p-2 px-4 bg-gray-800 text-white rounded-md hover:bg-gray-700">
             Update

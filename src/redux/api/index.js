@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery, retry } from "@reduxjs/toolkit/query/react";
 import { signOut } from "../slices/authSlice";
-const isDev = true;
+const isDev = false;
 const url = isDev ? import.meta.env.VITE_API_BASE_URL_LOCAL : import.meta.env.VITE_API_BASE_URL_SERVER;
 
 const baseQuery = async (args, api, extraOptions) => {
