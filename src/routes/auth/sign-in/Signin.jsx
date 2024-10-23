@@ -20,6 +20,7 @@ const Signin = () => {
       console.log("Login must be at least 3 characters long.");
       return;
     }
+
     const password = event.target.password.value;
     if (password.length < 3) {
       console.log("Password must be at least 3 characters long.");
@@ -30,7 +31,6 @@ const Signin = () => {
 
   useEffect(() => {
     if (isSuccess && data?.token) {
-      console.log(data);
       dispatch(signIn(data?.token));
       navigate(`/`);
     }

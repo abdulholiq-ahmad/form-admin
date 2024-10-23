@@ -1,6 +1,6 @@
 import { signOut } from "@/redux/slices/authSlice";
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
-import { Alert, Button, Space } from "antd";
+import { Alert, Space } from "antd";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { useDispatch } from "react-redux";

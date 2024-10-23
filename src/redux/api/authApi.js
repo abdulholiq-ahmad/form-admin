@@ -13,7 +13,6 @@ const authApi = api.injectEndpoints({
       async onQueryStarted(args, { queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-          console.log("Response data:", data);
           if (data?.token) {
             localStorage.setItem("token", data.token);
           }
@@ -33,7 +32,6 @@ const authApi = api.injectEndpoints({
       async onQueryStarted(args, { queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-          console.log("Response data:", data);
           if (data?.token) {
             localStorage.setItem("token", data.token);
           }

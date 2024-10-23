@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery, retry } from "@reduxjs/toolkit/query/react";
 import { signOut } from "../slices/authSlice";
-const isDev = false;
+const isDev = true;
 const url = isDev ? import.meta.env.VITE_API_BASE_URL_LOCAL : import.meta.env.VITE_API_BASE_URL_SERVER;
 
 const baseQuery = async (args, api, extraOptions) => {
@@ -27,6 +27,7 @@ const baseQuery = async (args, api, extraOptions) => {
   if (response.error && response.error.status === 403) {
     console.error("Forbidden access - You do not have permission to access this resource.");
     dispatch(signOut());
+    window.location.reload();
   }
 
   return response;
