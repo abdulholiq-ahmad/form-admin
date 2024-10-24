@@ -6,11 +6,13 @@ import { IoText } from "react-icons/io5";
 import { MdDeleteOutline } from "react-icons/md";
 import { useUpdateQeustionMutation } from "@/redux/api/questionApi";
 import TypeQuestion from "../form/FormRadio";
+import { useNavigate } from "react-router-dom";
 
 function UpdateForm({ data, id, lang }) {
   const [questionsList, setQuestionsList] = useState(data?.questions || []);
   const [disabled, setDisabled] = useState(false);
-  const [updateQuestion] = useUpdateQeustionMutation();
+  const [updateQuestion, { isSuccess }] = useUpdateQeustionMutation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (lang === "en" || lang === "uz") {
@@ -242,6 +244,10 @@ function UpdateForm({ data, id, lang }) {
     updateQuestion({
       questionData: updatedData,
     });
+
+    if (isSuccess) {
+      navigate("/questions");
+    }
   };
 
   return (
@@ -278,9 +284,7 @@ function UpdateForm({ data, id, lang }) {
             >
               Add Question
             </button>
-          ) : (
-            ""
-          )}
+          ) : null}
 
           <button type="submit" className="mt-4 p-2 px-4 bg-gray-800 text-white rounded-md hover:bg-gray-700">
             Update

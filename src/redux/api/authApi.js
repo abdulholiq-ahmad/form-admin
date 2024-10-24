@@ -43,4 +43,4 @@ const authApi = api.injectEndpoints({
   }),
 });
 
-export const { useSignInRequestMutation, useCheckUserQueryRequest } = authApi;
+export const { useSignInRequestMutation, useCheckUserRequestQuery } = authApi;

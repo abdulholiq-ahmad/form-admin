@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSignInRequestMutation } from "../../../redux/api/authApi";
-import { Alert } from "antd";
-import { useDispatch } from "react-redux";
 import { signIn } from "../../../redux/slices/authSlice";
 import { GrFormView } from "react-icons/gr";
 import { GrFormViewHide } from "react-icons/gr";
+import ErrorMessage from "@/components/message/ErrorMessage";
+import { useDispatch } from "react-redux";
 
 const Signin = () => {
   const [signInRequest, { data, isSuccess, isError, error, isLoading }] = useSignInRequestMutation();
+  console.log(error?.data.message);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -42,19 +43,7 @@ const Signin = () => {
 
   return (
     <div className="flex flex-col justify-center">
-      {isError && error?.message ? (
-        <Alert className="flex items-center top-2 left-2/4 translate-x-[-50%] absolute" message={error.message} type="error" closable showIcon />
-      ) : null}
-
-      {isSuccess ? (
-        <Alert
-          className="flex items-center top-2 left-2/4 translate-x-[-50%] absolute"
-          message={`You are logged in as ${data?.user?.login}`}
-          closable
-          type="success"
-          showIcon
-        />
-      ) : null}
+      <div className="absolute top-5 left-2/4 -translate-x-2/4">{isError ? <ErrorMessage message={error?.data.message} /> : null}</div>
       <div className="flex flex-1 items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
         <div className="w-full max-w-sm space-y-10 h-[70vh] flex flex-col justify-center">
           <div>

@@ -30,6 +30,12 @@ const baseQuery = async (args, api, extraOptions) => {
     window.location.reload();
   }
 
+  if (response.error && response.error.data.message === "User not found!" && response.error.status === 404) {
+    console.error("Resource not found - The requested resource could not be found.");
+    dispatch(signOut());
+    window.location.reload();
+  }
+
   return response;
 };
 

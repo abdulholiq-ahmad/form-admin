@@ -12,22 +12,9 @@ const App = () => {
     const token = localStorage.getItem("token");
     if (!token) {
       navigate("/auth/login");
+      dispatch(signOut());
     }
   }, [navigate]);
-
-  useEffect(() => {
-    const handleStorageChange = (e) => {
-      if (e.key === "token") {
-        dispatch(signOut());
-        navigate("/auth/login");
-      }
-    };
-    window.addEventListener("storage", handleStorageChange);
-
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-    };
-  }, [navigate, dispatch]);
 
   return (
     <>
