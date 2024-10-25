@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 function UpdateForm({ data, id, lang }) {
   const [questionsList, setQuestionsList] = useState(data?.questions || []);
   const [disabled, setDisabled] = useState(false);
-  const [updateQuestion, { isSuccess }] = useUpdateQeustionMutation();
+  const [updateQuestion, { isSuccess, isLoading }] = useUpdateQeustionMutation();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -48,6 +48,20 @@ function UpdateForm({ data, id, lang }) {
     };
 
     setQuestionsList((prevQuestions) => [...prevQuestions, newQuestionData]);
+  };
+
+  const handleAddOption = (questionIndex) => {
+    setQuestionsList((prevQuestions) => {
+      return prevQuestions.map((question, index) => {
+        if (index === questionIndex) {
+          return {
+            ...question,
+            options: [...question.options, `Option ${question.options.length + 1}`],
+          };
+        }
+        return question;
+      });
+    });
   };
 
   const handleDeleteOption = (questionIndex, optionIndex) => {
@@ -125,6 +139,11 @@ function UpdateForm({ data, id, lang }) {
     });
   };
 
+  const getTextForLang = (text) => {
+    if (data?.language === "ru" && lang === "ru") return text || "";
+    return text && data?.language !== "ru" && (lang === "uz" || lang === "en") ? text : "";
+  };
+
   const renderQuestions = () => {
     const filteredQuestions = questionsList.filter((question) => question.options && question.options.length > 0);
     return filteredQuestions.map((question, questionIndex) => (
@@ -132,19 +151,9 @@ function UpdateForm({ data, id, lang }) {
         <div className="flex gap-2">
           <input
             type="text"
-            value={
-              (data?.language === "ru" ? undefined : question.questionText && (lang === "uz" || lang === "en")) ||
-              (lang === "ru" && data?.language === "ru")
-                ? question.questionText
-                : undefined
-            }
+            defaultValue={getTextForLang(question.questionText) || ""}
+            placeholder={question.questionText}
             onChange={(e) => handleQuestionTextChange(e, questionIndex)}
-            placeholder={
-              (data?.language === !"ru" ? undefined : question.questionText && (lang === "uz" || lang === "en")) ||
-              (lang === "ru" && data?.language === !"ru")
-                ? question.questionText
-                : undefined
-            }
             className="border rounded-md pl-2 w-full py-1"
             required
           />
@@ -161,16 +170,10 @@ function UpdateForm({ data, id, lang }) {
               {renderQuestionIcon(question.questionType)}
               <input
                 type="text"
-                value={
-                  (data?.language === "ru" ? undefined : question.options[0] && (lang === "uz" || lang === "en")) ||
-                  (lang === "ru" && data?.language === "ru")
-                    ? question.options[0]
-                    : undefined
-                }
+                defaultValue={getTextForLang(question.options[0]) || ""}
                 onChange={(e) => handleOptionTextChange(e, questionIndex, 0)}
-                placeholder={question.options[0]}
                 className="border rounded-md pl-2 w-full py-1.5"
-                required
+                required={question.questionType !== "text"}
               />
             </div>
           ) : (
@@ -179,17 +182,9 @@ function UpdateForm({ data, id, lang }) {
                 {renderQuestionIcon(question.questionType)}
                 <input
                   type="text"
-                  value={
-                    (data?.language === "ru" ? undefined : option && (lang === "uz" || lang === "en")) || (lang === "ru" && data?.language === "ru")
-                      ? option
-                      : undefined
-                  }
+                  defaultValue={getTextForLang(option) || ""}
                   onChange={(e) => handleOptionTextChange(e, questionIndex, optionIndex)}
-                  placeholder={
-                    (data?.language === !"ru" ? undefined : option && (lang === "uz" || lang === "en")) || (lang === "ru" && data?.language === !"ru")
-                      ? option
-                      : undefined
-                  }
+                  placeholder={option || ""}
                   className="border rounded-md pl-2 w-full py-1.5"
                   required
                 />
@@ -216,11 +211,7 @@ function UpdateForm({ data, id, lang }) {
             disabled={disabled}
             type="button"
             onClick={() => {
-              setQuestionsList((prevQuestions) => {
-                const updatedQuestions = [...prevQuestions];
-                updatedQuestions[questionIndex].options.push(`Option ${updatedQuestions[questionIndex].options.length + 1}`);
-                return updatedQuestions;
-              });
+              handleAddOption(questionIndex);
             }}
             className={`self-start bg-transparent ${
               disabled ? "cursor-not-allowed opacity-80" : "cursor-pointer"
@@ -255,7 +246,7 @@ function UpdateForm({ data, id, lang }) {
     ));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const updatedData = {
       title: e.target.title.value,
@@ -264,15 +255,14 @@ function UpdateForm({ data, id, lang }) {
       language: lang,
       questions: questionsList,
     };
-    updateQuestion({
-      questionData: updatedData,
-    });
 
-    if (isSuccess) {
-      navigate("/questions");
+    try {
+      await updateQuestion({ questionData: updatedData }).unwrap();
+      isSuccess && navigate("/questions");
+    } catch (error) {
+      console.error("Failed to update question:", error);
     }
   };
-  console.log(lang, data);
 
   return (
     <div className="p-4">
@@ -282,34 +272,16 @@ function UpdateForm({ data, id, lang }) {
             type="text"
             name="title"
             id="title"
-            value={
-              (data?.language === "ru" ? undefined : data?.title && (lang === "uz" || lang === "en")) || (lang === "ru" && data?.language === "ru")
-                ? data?.title
-                : undefined
-            }
-            placeholder={
-              (data?.language === !"ru" ? undefined : data?.title && (lang === "uz" || lang === "en")) || (lang === "ru" && data?.language === !"ru")
-                ? data?.title
-                : undefined
-            }
+            defaultValue={getTextForLang(data?.title) || ""}
+            placeholder={data?.title || ""}
             className="border rounded-md pl-2 py-2 text-2xl"
             required
           />
           <input
             name="description"
             id="description"
-            value={
-              (data?.language === "ru" ? undefined : data?.description && (lang === "uz" || lang === "en")) ||
-              (lang === "ru" && data?.language === "ru")
-                ? data?.description
-                : undefined
-            }
-            placeholder={
-              (data?.language === !"ru" ? undefined : data?.description && (lang === "uz" || lang === "en")) ||
-              (lang === "ru" && data?.language === !"ru")
-                ? data?.description
-                : undefined
-            }
+            defaultValue={getTextForLang(data?.description) || ""}
+            placeholder={data?.description || ""}
             className="border rounded-md pl-2 py-2"
             required
           />
@@ -328,8 +300,21 @@ function UpdateForm({ data, id, lang }) {
             </button>
           ) : null}
 
-          <button type="submit" className="mt-4 p-2 px-4 bg-gray-800 text-white rounded-md hover:bg-gray-700">
-            Update
+          <button type="submit" className="mt-4 p-2 px-4 bg-gray-800 text-white rounded-md hover:bg-gray-700 flex items-center justify-center gap-3">
+            {isLoading ? (
+              <span className="block w-full mx-auto">
+                <svg className="animate-spin  mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" stroke="currentColor" strokeWidth="4" cx="12" cy="12" r="10"></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+              </span>
+            ) : (
+              "Update"
+            )}
           </button>
         </div>
       </form>
