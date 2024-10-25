@@ -315,7 +315,7 @@ function UpdateForm({ data, id, lang }) {
           />
         </div>
 
-        <div>{renderQuestions()}</div>
+        <div className="flex flex-col gap-4">{renderQuestions()}</div>
 
         <div className="flex items-center justify-between">
           {!disabled ? (
