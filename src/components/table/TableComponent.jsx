@@ -34,7 +34,7 @@ export default function TableComponent({ data }) {
                   <Tooltip
                     key={lang}
                     placement="top"
-                    title={`${lang.charAt(0).toUpperCase() + lang.slice(1)} dagi ma'lutmorlar`}
+                    title={`${lang.charAt(0).toUpperCase() + lang.slice(1)} dagi ma'lumotlar`}
                     color={"#fff"}
                     overlayInnerStyle={{ color: "#000" }}
                   >

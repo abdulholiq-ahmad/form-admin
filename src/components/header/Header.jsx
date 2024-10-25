@@ -16,7 +16,6 @@ const Header = ({ title }) => {
   ];
 
   const userNavigation = [
-    { name: "Your Profile", href: "#" },
     { name: "Log out", href: "#" },
   ];
 

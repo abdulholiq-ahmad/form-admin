@@ -132,9 +132,19 @@ function UpdateForm({ data, id, lang }) {
         <div className="flex gap-2">
           <input
             type="text"
-            value={lang === "ru" ? question.questionText : undefined}
+            value={
+              (data?.language === "ru" ? undefined : question.questionText && (lang === "uz" || lang === "en")) ||
+              (lang === "ru" && data?.language === "ru")
+                ? question.questionText
+                : undefined
+            }
             onChange={(e) => handleQuestionTextChange(e, questionIndex)}
-            placeholder={question.questionText}
+            placeholder={
+              (data?.language === !"ru" ? undefined : question.questionText && (lang === "uz" || lang === "en")) ||
+              (lang === "ru" && data?.language === !"ru")
+                ? question.questionText
+                : undefined
+            }
             className="border rounded-md pl-2 w-full py-1"
             required
           />
@@ -151,7 +161,12 @@ function UpdateForm({ data, id, lang }) {
               {renderQuestionIcon(question.questionType)}
               <input
                 type="text"
-                value={lang === "ru" ? question.options[0] : undefined}
+                value={
+                  (data?.language === "ru" ? undefined : question.options[0] && (lang === "uz" || lang === "en")) ||
+                  (lang === "ru" && data?.language === "ru")
+                    ? question.options[0]
+                    : undefined
+                }
                 onChange={(e) => handleOptionTextChange(e, questionIndex, 0)}
                 placeholder={question.options[0]}
                 className="border rounded-md pl-2 w-full py-1.5"
@@ -164,9 +179,17 @@ function UpdateForm({ data, id, lang }) {
                 {renderQuestionIcon(question.questionType)}
                 <input
                   type="text"
-                  value={lang === "ru" ? option : undefined}
+                  value={
+                    (data?.language === "ru" ? undefined : option && (lang === "uz" || lang === "en")) || (lang === "ru" && data?.language === "ru")
+                      ? option
+                      : undefined
+                  }
                   onChange={(e) => handleOptionTextChange(e, questionIndex, optionIndex)}
-                  placeholder={option}
+                  placeholder={
+                    (data?.language === !"ru" ? undefined : option && (lang === "uz" || lang === "en")) || (lang === "ru" && data?.language === !"ru")
+                      ? option
+                      : undefined
+                  }
                   className="border rounded-md pl-2 w-full py-1.5"
                   required
                 />
@@ -249,6 +272,7 @@ function UpdateForm({ data, id, lang }) {
       navigate("/questions");
     }
   };
+  console.log(lang, data);
 
   return (
     <div className="p-4">
@@ -258,16 +282,34 @@ function UpdateForm({ data, id, lang }) {
             type="text"
             name="title"
             id="title"
-            defaultValue={lang === "ru" ? data?.title : undefined}
-            placeholder="Question title"
+            value={
+              (data?.language === "ru" ? undefined : data?.title && (lang === "uz" || lang === "en")) || (lang === "ru" && data?.language === "ru")
+                ? data?.title
+                : undefined
+            }
+            placeholder={
+              (data?.language === !"ru" ? undefined : data?.title && (lang === "uz" || lang === "en")) || (lang === "ru" && data?.language === !"ru")
+                ? data?.title
+                : undefined
+            }
             className="border rounded-md pl-2 py-2 text-2xl"
             required
           />
           <input
             name="description"
             id="description"
-            defaultValue={lang === "ru" ? data?.description : undefined}
-            placeholder="Question description"
+            value={
+              (data?.language === "ru" ? undefined : data?.description && (lang === "uz" || lang === "en")) ||
+              (lang === "ru" && data?.language === "ru")
+                ? data?.description
+                : undefined
+            }
+            placeholder={
+              (data?.language === !"ru" ? undefined : data?.description && (lang === "uz" || lang === "en")) ||
+              (lang === "ru" && data?.language === !"ru")
+                ? data?.description
+                : undefined
+            }
             className="border rounded-md pl-2 py-2"
             required
           />
