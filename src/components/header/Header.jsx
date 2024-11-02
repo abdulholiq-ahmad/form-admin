@@ -5,6 +5,7 @@ import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import { UserIcon } from "@heroicons/react/24/outline";
 
 const Header = ({ title }) => {
   const dispatch = useDispatch();
@@ -15,19 +16,15 @@ const Header = ({ title }) => {
     { name: "Questions", href: "/questions", current: false },
   ];
 
-  const userNavigation = [
-    { name: "Log out", href: "#" },
-  ];
+  const userNavigation = [{ name: "Log out", href: "#" }];
 
   function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
   }
 
   const user = {
-    name: "Tom Cook",
-    email: "tom@example.com",
-    imageUrl:
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+    name: "Admin",
+    email: "admin@gmail.com",
   };
 
   const handleNavigation = () => {
@@ -87,10 +84,10 @@ const Header = ({ title }) => {
               <div className="ml-4 flex items-center md:ml-6">
                 <Menu as="div" className="relative ml-3">
                   <div>
-                    <MenuButton className="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                    <MenuButton className="relative flex max-w-xs items-center rounded-full bg-gray-800 border border-gray-600 p-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                       <span className="absolute -inset-1.5" />
                       <span className="sr-only">Open user menu</span>
-                      <img alt="" src={user.imageUrl} className="h-8 w-8 rounded-full" />
+                      <UserIcon className="h-6 w-6 text-white" />
                     </MenuButton>
                   </div>
                   <MenuItems
@@ -144,23 +141,6 @@ const Header = ({ title }) => {
             ))}
           </div>
           <div className="border-t border-gray-700 pb-3 pt-4">
-            <div className="flex items-center px-5">
-              <div className="flex-shrink-0">
-                <img alt="" src={user.imageUrl} className="h-10 w-10 rounded-full" />
-              </div>
-              <div className="ml-3">
-                <div className="text-base font-medium leading-none text-white">{user.name}</div>
-                <div className="text-sm font-medium leading-none text-gray-400">{user.email}</div>
-              </div>
-              <button
-                type="button"
-                className="relative ml-auto flex-shrink-0 rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-              >
-                <span className="absolute -inset-1.5" />
-                <span className="sr-only">View notifications</span>
-                <BellIcon aria-hidden="true" className="h-6 w-6" />
-              </button>
-            </div>
             <div className="mt-3 space-y-1 px-2">
               {userNavigation.map((item) => (
                 <DisclosureButton
@@ -177,6 +157,7 @@ const Header = ({ title }) => {
         </DisclosurePanel>
       </Disclosure>
 
+      {/* Alert */}
       {confirmLogOut ? (
         <div className="w-full h-full absolute top-0 left-0 bg-gray-800/70 z-10">
           <Alert

@@ -8,13 +8,13 @@ const App = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/auth/login");
-      dispatch(signOut());
-    }
-  }, [navigate]);
+  // useEffect(() => {
+  //   const token = localStorage.getItem("token");
+  //   if (!token) {
+  //     navigate("/auth/login");
+  //     dispatch(signOut());
+  //   }
+  // }, [navigate]);
 
   return (
     <>

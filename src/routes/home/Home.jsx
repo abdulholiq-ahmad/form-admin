@@ -1,6 +1,6 @@
 import Chart from "@/components/chart/Chart";
 import { memo, useEffect, useState } from "react";
-import { UserData } from "@/Data";
+import { UserData, MostCompletedData } from "@/Data";
 import { useCheckUserRequestQuery, useSignInRequestMutation } from "@/redux/api/authApi";
 
 const Home = ({ title }) => {
@@ -11,11 +11,25 @@ const Home = ({ title }) => {
     datasets: [
       {
         label: "Created Questions",
+        borderColor: "navy",
+        pointRadius: 1,
+        fill: true,
+        backgroundColor: "rgba(0,0,0,0.1)",
+        lineTension: 0.4,
         data: UserData.map((data) => data.userGain),
-        backgroundColor: ["#FADA5E"],
-        fill: false,
-        borderColor: ["#FADA5E"],
-        borderWidth: 1.5,
+        borderWidth: 2,
+        aspectRatio: 1,
+      },
+      {
+        label: "Completed",
+        borderColor: "navy",
+        pointRadius: 1,
+        fill: true,
+        backgroundColor: "rgba(0,0,0,0.1)",
+        lineTension: 0.4,
+        data: MostCompletedData.map((data) => data?.completed),
+        borderWidth: 2,
+        aspectRatio: 1,
       },
     ],
   });
